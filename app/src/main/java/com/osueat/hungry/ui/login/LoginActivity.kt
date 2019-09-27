@@ -1,6 +1,7 @@
 package com.osueat.hungry.ui.login
 
 import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.osueat.hungry.MainActivity
 
 import com.osueat.hungry.R
 
@@ -59,6 +61,11 @@ class LoginActivity : AppCompatActivity() {
                 updateUiWithUser(loginResult.success)
             }
             setResult(Activity.RESULT_OK)
+
+            // go to the main activity
+            val intent = Intent(this, MainActivity::class.java).apply {
+            }
+            startActivity(intent)
 
             //Complete and destroy login activity once successful
             finish()
