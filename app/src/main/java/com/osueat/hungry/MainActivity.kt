@@ -1,6 +1,8 @@
 package com.osueat.hungry
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -25,5 +27,11 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        var button: Button = findViewById(R.id.button)
+        button.setOnClickListener {
+            var intent = Intent(this, TruckActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

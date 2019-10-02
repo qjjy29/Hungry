@@ -63,8 +63,7 @@ class LoginActivity : AppCompatActivity() {
             setResult(Activity.RESULT_OK)
 
             // go to the main activity
-            val intent = Intent(this, MainActivity::class.java).apply {
-            }
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
 
             //Complete and destroy login activity once successful
@@ -105,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
+        val welcome = "Welcome, great customer"
         val displayName = model.displayName
         // TODO : initiate successful logged in experience
         Toast.makeText(
