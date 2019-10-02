@@ -11,13 +11,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import com.osueat.hungry.MainActivity
 
 import com.osueat.hungry.R
+import com.osueat.hungry.ui.VendorMainActivity
+import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
 
@@ -63,8 +62,19 @@ class LoginActivity : AppCompatActivity() {
             setResult(Activity.RESULT_OK)
 
             // go to the main activity
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+
+            // if vendor, go to vendor home page
+            var vendorCheckBox: CheckBox = findViewById(R.id.vendorCheckBox)
+            if (vendorCheckBox.isChecked()) {
+                val intent = Intent(this, VendorMainActivity::class.java)
+                startActivity(intent)
+            }
+
+            else {
+                // else go to customer main activity
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
 
             //Complete and destroy login activity once successful
             finish()

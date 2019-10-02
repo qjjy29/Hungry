@@ -9,9 +9,14 @@
         android:roundIcon="@mipmap/cat"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.login.VendorOrderActivity"></activity>
+        <activity
+            android:name=".ui.VendorMainActivity"
+            android:label="@string/title_activity_vendor_main"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main"></activity>
+            android:label="@string/title_activity_main" />
         <activity android:name=".TruckActivity" />
         <activity
             android:name=".ui.login.LoginActivity"
