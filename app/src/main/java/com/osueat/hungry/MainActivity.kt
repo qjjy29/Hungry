@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         val updatedUser = User(id, username, password, createDate, lastUpdateDate,
             lastLoginDate, "9999999999", email, type)
         userDao.updateUserById(id, updatedUser)
-        userDao.deleteUserById(id)
+        //userDao.deleteUserById(id)
     }
 
     public override fun onStart() {

@@ -28,7 +28,7 @@ class UserDao(private val databaseRef: DatabaseReference) {
     }
 
     fun updateUserById(id: String, user: User) {
-        databaseRef.child("users").child(id).addValueEventListener(object : ValueEventListener {
+        databaseRef.child("users").child(id).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val result = dataSnapshot.value
                 if (result != null) {
@@ -43,7 +43,7 @@ class UserDao(private val databaseRef: DatabaseReference) {
     }
 
     fun deleteUserById(id: String) {
-        databaseRef.child("users").child(id).addValueEventListener(object : ValueEventListener {
+        databaseRef.child("users").child(id).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val result = dataSnapshot.value
                 if (result != null) {
