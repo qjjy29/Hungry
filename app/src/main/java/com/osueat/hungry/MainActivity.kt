@@ -10,6 +10,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.database.FirebaseDatabase
+import com.osueat.hungry.model.User
+import java.util.*
+import com.osueat.hungry.model.UserDao
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,6 +42,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.d(TAG, "onCreate() called")
+
+        // test code added by Yun to show how to use functions in xxxDao, should be removed later
+        val ref = FirebaseDatabase.getInstance().reference
+
+        val id = UUID.randomUUID().toString()
+        val username = "aalok"
+        val password = "aalok"
+        val createDate = Date().time
+        val lastUpdateDate = Date().time
+        val lastLoginDate = Date().time
+        val type = "CUSTOMER"
+        val phoneNumber = "1234567802"
+        val email = "aalok@gmail.com"
+
+        val newUser = User(id, username, password, createDate, lastUpdateDate,
+            lastLoginDate, phoneNumber, email, type)
+
+        val userDao = UserDao(ref)
+        userDao.createUser(newUser)
+
+        val updatedUser = User(id, username, password, createDate, lastUpdateDate,
+            lastLoginDate, "9999999999", email, type)
+        userDao.updateUserById(id, updatedUser)
+        userDao.deleteUserById(id)
     }
 
     public override fun onStart() {
