@@ -16,8 +16,7 @@ import android.widget.*
 import com.osueat.hungry.MainActivity
 
 import com.osueat.hungry.R
-import com.osueat.hungry.ui.VendorMainActivity
-import kotlinx.android.synthetic.main.activity_login.*
+import com.osueat.hungry.ui.vendor.VendorMainActivity
 
 class LoginActivity : AppCompatActivity() {
 

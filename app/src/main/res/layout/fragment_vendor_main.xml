@@ -4,8 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.VendorMainActivityFragment"
+    tools:context=".ui.vendor.VendorMainActivityFragment"
     tools:showIn="@layout/activity_vendor_main">
+
+    <Button
+        android:id="@+id/retrieveTruckListButton"
+        android:layout_width="398dp"
+        android:layout_height="69dp"
+        android:text="Retrieve Truck List"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTruckActivityButton" />
 
     <Button
         android:id="@+id/orderButton4"
@@ -47,5 +57,15 @@
         app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/addTruckActivityButton"
+        android:layout_width="398dp"
+        android:layout_height="69dp"
+        android:text="Add Truck"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderButton4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
