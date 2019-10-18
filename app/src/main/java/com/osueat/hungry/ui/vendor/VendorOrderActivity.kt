@@ -1,26 +1,19 @@
-package com.osueat.hungry.ui
+package com.osueat.hungry.ui.vendor
 
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.osueat.hungry.R
 
-/**
- * A placeholder fragment containing a simple view.
- */
-class VendorMainActivityFragment : Fragment() {
+class VendorOrderActivity : AppCompatActivity() {
 
-    private val TAG = "VendorMainActivityFrag"
+    private val TAG = "VendorOrderActivity"
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        Log.d(TAG, "onCreateView() called")
-        return inflater.inflate(R.layout.fragment_vendor_main, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_vendor_order)
+
+        Log.d(TAG, "onCreate() called")
     }
 
     public override fun onStart() {

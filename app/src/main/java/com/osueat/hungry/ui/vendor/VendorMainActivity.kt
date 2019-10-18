@@ -1,18 +1,14 @@
-package com.osueat.hungry.ui
+package com.osueat.hungry.ui.vendor
 
 import android.os.Bundle
 import android.view.View
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 
 import kotlinx.android.synthetic.main.activity_vendor_main.*
 import kotlinx.android.synthetic.main.fragment_vendor_main.*
-import android.R.attr.button
-import android.R
 import android.content.Intent
 import android.util.Log.d
 import android.util.Log
-import com.osueat.hungry.ui.login.VendorOrderActivity
 
 
 class VendorMainActivity : AppCompatActivity() {
@@ -43,6 +39,21 @@ class VendorMainActivity : AppCompatActivity() {
             d("Order Button", "Pressed order button.")
             startActivity(Intent(this, VendorOrderActivity::class.java))
         })
+
+        addTruckActivityButton.setOnClickListener(View.OnClickListener {
+            startActivity(Intent(this, VendorAddTruckActivity::class.java))
+        })
+
+        retrieveTruckListButton.setOnClickListener(View.OnClickListener {
+            startActivity(Intent(this, VendorRetrieveTruckListActivity::class.java))
+        })
+
+        // create a sample truck to add to the database
+        //val db = FirebaseDatabase.getInstance().reference
+        //val t = Truck("Sample Truck")
+        //val truckDB = TruckDatabaseManager(db)
+
+        //truckDB.createTruck(t)
 
         Log.d(TAG, "onCreate() called")
     }
