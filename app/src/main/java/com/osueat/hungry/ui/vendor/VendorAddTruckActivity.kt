@@ -18,7 +18,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
 
     private val TAG = "VendorAddTruckActivity"
 
-    var truckList = ArrayList<Truck>();
+    val truckList = ArrayList<Truck>();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +30,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
         saveButton.setOnClickListener(View.OnClickListener {
             val name = nameEditText.text
             val address = addressEditText.text
-            var t = Truck(name.toString(), address.toString())
+            val t = Truck(name.toString(), address.toString())
             truckList.add(t)
 
             ref.push().setValue(t)
