@@ -12,6 +12,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.R
 import com.osueat.hungry.model.Truck
+import com.osueat.hungry.model.TruckDao
+import java.util.*
+import kotlin.collections.HashMap
 
 class VendorRetrieveTruckListActivity : AppCompatActivity() {
 
@@ -22,8 +25,8 @@ class VendorRetrieveTruckListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vendor_retrieve_truck_list)
         
-/*
-        val ref = FirebaseDatabase.getInstance().getReference().child("trucks")
+
+        val ref = FirebaseDatabase.getInstance().reference.child("trucks")
         ref.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -32,15 +35,16 @@ class VendorRetrieveTruckListActivity : AppCompatActivity() {
             override fun onDataChange(p0: DataSnapshot) {
                 if(p0!!.exists()) {
                     for (t in p0.children) {
-                        val truck = t.getValue(Truck::class.java)
-                        truckList.add(truck!!)
+                        val truck = t.value as HashMap<String, Objects>
+                        val truckDao = TruckDao()
+                        truckList.add(truckDao.constructTruckByHashMap(truck))
                     }
                 }
 
-
+                Log.d(TAG, truckList.toString());
             }
         });
 
- */
+
     }
 }
