@@ -119,14 +119,22 @@ class VendorAddTruckActivity : AppCompatActivity() {
             }
         })
 
-        //deleteButton.setOnClickListener(View.OnClickListener {
-        //})
+        updateView.deleteTruckButton.setOnClickListener(View.OnClickListener {
+            deleteTruck(truckId)
+            Toast.makeText(this, "Truck deleted from database", Toast.LENGTH_LONG).show()
+            alertWindow.dismiss()
+        })
     }
 
     private fun updateTruck(truckId: String, newName: String, newAddress: String) {
         val truckRef = FirebaseDatabase.getInstance().getReference("trucks").child(truckId)
         val newTruck = Truck(truckId, newName, newAddress)
         truckRef.setValue(newTruck)
+    }
+
+    private fun deleteTruck(truckId : String) {
+        val truckRef = FirebaseDatabase.getInstance().getReference("trucks").child(truckId)
+        truckRef.removeValue()
     }
 
     public override fun onStart() {
