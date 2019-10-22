@@ -44,10 +44,6 @@ class VendorMainActivity : AppCompatActivity() {
             startActivity(Intent(this, VendorAddTruckActivity::class.java))
         })
 
-        retrieveTruckListButton.setOnClickListener(View.OnClickListener {
-            startActivity(Intent(this, VendorRetrieveTruckListActivity::class.java))
-        })
-
         // create a sample truck to add to the database
         //val db = FirebaseDatabase.getInstance().reference
         //val t = Truck("Sample Truck")
