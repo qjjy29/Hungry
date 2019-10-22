@@ -16,9 +16,18 @@ import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.R
 import com.osueat.hungry.model.Truck
 import kotlinx.android.synthetic.main.activity_vendor_add_truck.*
+import android.nfc.Tag
+import android.widget.ListView
+import com.osueat.hungry.model.TruckDao
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import com.osueat.hungry.MainActivity
+import android.text.method.TextKeyListener.clear
+import com.osueat.hungry.model.TruckListAdapter
+
 
 class VendorAddTruckActivity : AppCompatActivity() {
-
 
     private val TAG = "VendorAddTruckActivity"
 
@@ -29,6 +38,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vendor_add_truck)
 
+        // add truck to database
         saveButton.setOnClickListener(View.OnClickListener {
             val name = nameEditText.text
             val address = addressEditText.text
@@ -59,6 +69,25 @@ class VendorAddTruckActivity : AppCompatActivity() {
     public override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart() called")
+
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                truckList.clear()
+
+                for (t in dataSnapshot.children) {
+                    val truck = t.value as HashMap<String, Objects>
+                    val truckDao = TruckDao()
+                    truckList.add(truckDao.constructTruckByHashMap(truck))
+                }
+
+                val truckListAdapter = TruckListAdapter(this@VendorAddTruckActivity, truckList)
+                findViewById<ListView>(R.id.truckListView).adapter = truckListAdapter
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                TODO("not implemented")
+            }
+        })
     }
 
     public override fun onResume() {

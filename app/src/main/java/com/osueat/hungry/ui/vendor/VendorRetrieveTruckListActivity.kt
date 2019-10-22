@@ -46,7 +46,7 @@ class VendorRetrieveTruckListActivity : AppCompatActivity() {
                     Log.d(TAG, t.getName() + ", " + t.getAddress())
                 }
             }
-        });
+        })
 
 
     }
