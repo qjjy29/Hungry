@@ -19,7 +19,7 @@ import kotlin.collections.HashMap
 class VendorRetrieveTruckListActivity : AppCompatActivity() {
 
     var truckList: MutableList<Truck> = mutableListOf()
-    val TAG = "Database entry: "
+    val TAG = "VendorRetrieveTruckList"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +41,10 @@ class VendorRetrieveTruckListActivity : AppCompatActivity() {
                     }
                 }
 
-                Log.d(TAG, truckList.toString());
+                // print list of trucks in database
+                for (t in truckList) {
+                    Log.d(TAG, t.getName() + ", " + t.getAddress())
+                }
             }
         });
 
