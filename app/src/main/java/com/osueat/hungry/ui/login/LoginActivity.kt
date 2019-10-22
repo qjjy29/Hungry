@@ -16,6 +16,7 @@ import android.widget.*
 import com.osueat.hungry.MainActivity
 
 import com.osueat.hungry.R
+import com.osueat.hungry.RegisterActivity
 import com.osueat.hungry.ui.vendor.VendorMainActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -33,6 +34,7 @@ class LoginActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password)
         val login = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
+        val register = findViewById<Button>(R.id.register)
 
         loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
@@ -112,6 +114,14 @@ class LoginActivity : AppCompatActivity() {
                 loading.visibility = View.VISIBLE
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
+
+        }
+
+        register.isEnabled = true
+        register.setOnClickListener {
+            // else go to register activity
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 

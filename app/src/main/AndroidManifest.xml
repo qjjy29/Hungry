@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/cat"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.vendor.VendorRetrieveTruckListActivity"></activity>
+        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".ui.vendor.VendorRetrieveTruckListActivity" />
         <activity android:name=".ui.vendor.VendorAddTruckActivity" />
         <activity android:name=".ui.vendor.VendorOrderActivity" />
         <activity
