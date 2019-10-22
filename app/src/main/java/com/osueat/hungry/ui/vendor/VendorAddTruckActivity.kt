@@ -24,7 +24,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vendor_add_truck)
 
-        val ref = FirebaseDatabase.getInstance().getReference().child("trucks")
+        val ref = FirebaseDatabase.getInstance().reference.child("trucks")
 
 
         saveButton.setOnClickListener(View.OnClickListener {
@@ -32,6 +32,10 @@ class VendorAddTruckActivity : AppCompatActivity() {
             val address = addressEditText.text
             val t = Truck(name.toString(), address.toString())
             truckList.add(t)
+            Log.d(TAG, truckList.toString())
+            Log.d(TAG, name.toString())
+            Log.d(TAG, address.toString())
+
 
             ref.push().setValue(t)
         })

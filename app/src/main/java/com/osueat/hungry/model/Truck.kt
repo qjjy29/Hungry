@@ -7,4 +7,12 @@ class Truck (truckName: String, truckAddress: String) {
     private val name = truckName
     private val address = truckAddress
 
+    // THIS WILL NOT WORK WITH FIREBASE WITHOUT THE GETTERS
+    fun getName(): String {
+        return name
+    }
+
+    fun getAddress(): String{
+        return address
+    }
 }
