@@ -19,4 +19,6 @@
     <string name="phone">Phone</string>
     <string name="save">Save</string>
     <string name="add_truck">Add Truck</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
 </resources>
