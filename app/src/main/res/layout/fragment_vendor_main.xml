@@ -8,16 +8,6 @@
     tools:showIn="@layout/activity_vendor_main">
 
     <Button
-        android:id="@+id/retrieveTruckListButton"
-        android:layout_width="398dp"
-        android:layout_height="69dp"
-        android:text="Retrieve Truck List"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.461"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addTruckActivityButton" />
-
-    <Button
         android:id="@+id/orderButton4"
         android:layout_width="398dp"
         android:layout_height="69dp"
