@@ -1,6 +1,7 @@
 package com.osueat.hungry.ui.login
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,16 +14,56 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.MainActivity
 
 import com.osueat.hungry.R
 import com.osueat.hungry.RegisterActivity
+import com.osueat.hungry.model.Customer
+import com.osueat.hungry.model.User
 import com.osueat.hungry.ui.vendor.VendorMainActivity
+import java.util.*
+import kotlin.collections.HashMap
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
     private val TAG = "LoginActivity"
+
+    private lateinit var loading: ProgressBar
+    private lateinit var username: EditText
+    private lateinit var password: EditText
+    private lateinit var login: Button
+    private lateinit var register: Button
+
+
+    fun auth(username: String, password: String, it: Context) {
+        val ref = FirebaseDatabase.getInstance().reference.child("users")
+        Log.d(TAG, "auth")
+        ref.orderByChild("username").equalTo(username).addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (dataSnapshotChild in dataSnapshot.children) {
+                    val d = dataSnapshotChild.value as HashMap<String, Objects>
+                    if (d["password"]!! as String == password) {
+                        val intent = Intent(it, MainActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(applicationContext, "Invalid username/password, please try again",
+                            Toast.LENGTH_LONG).show()
+                    }
+                    break
+                }
+                loading.visibility = View.INVISIBLE
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("The read failed: " + databaseError.code)
+            }
+        })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +71,11 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
 
-        val username = findViewById<EditText>(R.id.username)
-        val password = findViewById<EditText>(R.id.password)
-        val login = findViewById<Button>(R.id.login)
-        val loading = findViewById<ProgressBar>(R.id.loading)
-        val register = findViewById<Button>(R.id.register)
+        username = findViewById(R.id.username)
+        password = findViewById(R.id.password)
+        login = findViewById(R.id.login)
+        loading = findViewById(R.id.loading)
+        register = findViewById(R.id.register)
 
         loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
@@ -69,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
 
             // if vendor, go to vendor home page
             var vendorCheckBox: CheckBox = findViewById(R.id.vendorCheckBox)
-            if (vendorCheckBox.isChecked()) {
+            if (vendorCheckBox.isChecked) {
                 val intent = Intent(this, VendorMainActivity::class.java)
                 startActivity(intent)
             }
@@ -110,10 +151,11 @@ class LoginActivity : AppCompatActivity() {
                 false
             }
 
-            login.setOnClickListener {
-                loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
-            }
+        }
+
+        login.setOnClickListener {
+            loading.visibility = View.VISIBLE
+            auth(username.text.toString(), password.text.toString(), this)
 
         }
 

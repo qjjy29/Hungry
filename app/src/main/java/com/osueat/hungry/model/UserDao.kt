@@ -1,5 +1,6 @@
 package com.osueat.hungry.model
 
+import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -8,6 +9,8 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class UserDao(private val databaseRef: DatabaseReference) {
+
+    private val TAG = "UserDao"
 
     private fun constructUserByHashMap(userMap: HashMap<String, Objects>): User {
         val id = userMap["id"] as String
@@ -25,14 +28,17 @@ class UserDao(private val databaseRef: DatabaseReference) {
 
     fun createUser(user: User) {
         databaseRef.child("users").child(user.id).setValue(user)
+        Log.d(TAG, user.username)
     }
 
     fun updateUserById(id: String, user: User) {
         databaseRef.child("users").child(id).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val result = dataSnapshot.value
+                Log.d(TAG, result.toString())
                 if (result != null) {
                     databaseRef.child("users").child(id).setValue(user)
+                    Log.d(TAG, "user updated")
                 }
             }
 
