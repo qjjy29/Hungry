@@ -20,36 +20,9 @@ class VendorMainActivity : AppCompatActivity() {
         setContentView(com.osueat.hungry.R.layout.activity_vendor_main)
         setSupportActionBar(toolbar)
 
-        orderButton1.setOnClickListener(View.OnClickListener {
-            d("Order Button", "Pressed order button.")
-            startActivity(Intent(this, VendorOrderActivity::class.java))
-        })
-
-        orderButton2.setOnClickListener(View.OnClickListener {
-            d("Order Button", "Pressed order button.")
-            startActivity(Intent(this, VendorOrderActivity::class.java))
-        })
-
-        orderButton3.setOnClickListener(View.OnClickListener {
-            d("Order Button", "Pressed order button.")
-            startActivity(Intent(this, VendorOrderActivity::class.java))
-        })
-
-        orderButton4.setOnClickListener(View.OnClickListener {
-            d("Order Button", "Pressed order button.")
-            startActivity(Intent(this, VendorOrderActivity::class.java))
-        })
-
         addTruckActivityButton.setOnClickListener(View.OnClickListener {
             startActivity(Intent(this, VendorAddTruckActivity::class.java))
         })
-
-        // create a sample truck to add to the database
-        //val db = FirebaseDatabase.getInstance().reference
-        //val t = Truck("Sample Truck")
-        //val truckDB = TruckDatabaseManager(db)
-
-        //truckDB.createTruck(t)
 
         Log.d(TAG, "onCreate() called")
     }

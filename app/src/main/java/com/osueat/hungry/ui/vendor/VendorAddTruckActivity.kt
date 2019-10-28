@@ -37,6 +37,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
     val ref = FirebaseDatabase.getInstance().reference.child("trucks")
 
     val tempFoodIdList = ArrayList<String>()
+    val truckDao = TruckDao()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,13 +54,10 @@ class VendorAddTruckActivity : AppCompatActivity() {
 
             // if truck name/address is provided, add to database
             if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(address)) {
-                val id = ref.push().key
                 // TODO: change food list and vendor id
+                val truck = Truck(UUID.randomUUID().toString(), name.toString(), address.toString(), tempFoodIdList, "TEMP")
 
-                val truck = Truck(id.toString(), name.toString(), address.toString(), tempFoodIdList, "TEMP")
-
-                // add truck to database
-                ref.child(id.toString()).setValue(truck)
+                truckDao.createTruck(truck)
                 truckList.add(truck)
 
                 // reset edit texts
@@ -126,22 +124,16 @@ class VendorAddTruckActivity : AppCompatActivity() {
         })
 
         updateView.deleteTruckButton.setOnClickListener(View.OnClickListener {
-            deleteTruck(truckId)
+            truckDao.deleteTruckById(truckId)
             Toast.makeText(this, "Truck deleted from database", Toast.LENGTH_LONG).show()
             alertWindow.dismiss()
         })
     }
 
     private fun updateTruck(truckId: String, newName: String, newAddress: String) {
-        val truckRef = FirebaseDatabase.getInstance().getReference("trucks").child(truckId)
         // TODO: change food list and vendor id
         val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList, "TEMP")
-        truckRef.setValue(newTruck)
-    }
-
-    private fun deleteTruck(truckId : String) {
-        val truckRef = FirebaseDatabase.getInstance().getReference("trucks").child(truckId)
-        truckRef.removeValue()
+        truckDao.updateTruckById(truckId, newTruck)
     }
 
     public override fun onStart() {
