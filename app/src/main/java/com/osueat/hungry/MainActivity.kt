@@ -11,9 +11,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.database.FirebaseDatabase
-import com.osueat.hungry.model.User
+import com.osueat.hungry.model.*
 import java.util.*
-import com.osueat.hungry.model.UserDao
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,6 +41,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.d(TAG, "onCreate() called")
+
+        // test orderedfood
+        val orderedFood1 = OrderedFood("1", 1)
+        val orderedFood2 = OrderedFood("2", 1)
+        val orderedFoodList = listOf(orderedFood1, orderedFood2)
+        val id = "13"
+        val customerId = "15"
+        val vendorId = "18"
+        val truckId = "213"
+        val status = "Pending"
+        val price = 6.0
+        val createDate = 123L
+        val lastUpdateDate = 456L
+        val order = Order(
+            id, customerId, vendorId, truckId, orderedFoodList,
+            status, price, createDate, lastUpdateDate
+        )
+        val ref = FirebaseDatabase.getInstance().reference
+        val orderDao = OrderDao(ref)
+        orderDao.createOrder(order)
     }
 
     public override fun onStart() {
