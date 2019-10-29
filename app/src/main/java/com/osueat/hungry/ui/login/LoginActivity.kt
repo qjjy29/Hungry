@@ -48,8 +48,16 @@ class LoginActivity : AppCompatActivity() {
                 for (dataSnapshotChild in dataSnapshot.children) {
                     val d = dataSnapshotChild.value as HashMap<String, Objects>
                     if (d["password"]!! as String == password) {
-                        val intent = Intent(it, MainActivity::class.java)
-                        startActivity(intent)
+                        // check if user is customer
+                        if (d["type"].toString() == "CUSTOMER") {
+                            val intent = Intent(it, MainActivity::class.java)
+                            startActivity(intent)
+                        }
+                        // else user is vendor
+                        else {
+                            val intent = Intent(it, VendorMainActivity::class.java)
+                            startActivity(intent)
+                        }
                     } else {
                         Toast.makeText(applicationContext, "Invalid username/password, please try again",
                             Toast.LENGTH_LONG).show()
