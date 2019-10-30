@@ -10,8 +10,26 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ui.vendor.VendorTruckActivity">
 
+    <TextView
+        android:id="@+id/truckName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/name"
+        android:textAlignment="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+
+    <TextView
+        android:id="@+id/truckAddress"
+        android:layout_below="@id/truckName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/address"
+        android:textAlignment="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
     <Button
         android:id="@+id/editTruckButton"
+        android:layout_below="@id/truckAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/edit_truck" />

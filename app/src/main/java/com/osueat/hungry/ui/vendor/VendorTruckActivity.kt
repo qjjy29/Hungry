@@ -2,16 +2,25 @@ package com.osueat.hungry.ui.vendor
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
+import android.view.View
 import android.widget.ListView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.R
 import com.osueat.hungry.model.*
+import kotlinx.android.synthetic.main.activity_vendor_truck.*
+import kotlinx.android.synthetic.main.layout_update_delete_truck.view.*
 import java.util.*
 import kotlin.collections.HashMap
+import com.google.firebase.database.DatabaseReference
+
+
 
 class VendorTruckActivity : AppCompatActivity() {
 
@@ -21,16 +30,107 @@ class VendorTruckActivity : AppCompatActivity() {
     private val ref = FirebaseDatabase.getInstance().reference.child("food")
 
     private val foodDao = FoodDao()
+    private val truckDao = TruckDao()
+    private val tempFoodIdList = ArrayList<String>()
+
+    // todo: change this probably
+    private val currentTruck = ArrayList<Truck>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vendor_truck)
+
+        tempFoodIdList.add("testID_1")
+        tempFoodIdList.add("testID_2")
+        tempFoodIdList.add("testID_3")
+
+        //Toast.makeText(this, this.intent.getStringExtra("truckId"), Toast.LENGTH_LONG).show()
+
+        editTruckButton.setOnClickListener(View.OnClickListener {
+            createUpdateTruckWindow(currentTruck[0].id, currentTruck[0].name, currentTruck[0].address)
+        })
+    }
+
+    private fun createUpdateTruckWindow(truckId: String, truckName: String, truckAddress: String) {
+        val alertDialog = AlertDialog.Builder(this@VendorTruckActivity)
+        val updateView = layoutInflater.inflate(R.layout.layout_update_delete_truck, null)
+        alertDialog.setView(updateView)
+        alertDialog.setTitle(truckName)
+
+        // show update/delete window
+        val alertWindow = alertDialog.create()
+        alertWindow.show()
+
+        updateView.updateTruckButton.setOnClickListener(View.OnClickListener {
+            val newName = updateView.nameEditText.text.toString()
+            val newAddress = updateView.addressEditText.text.toString()
+
+            // update both name and address of truck
+            if (!TextUtils.isEmpty(newName) && !TextUtils.isEmpty(newAddress)) {
+                updateTruck(truckId, newName, newAddress)
+                alertWindow.dismiss()
+                Toast.makeText(this, "Truck name and address updated", Toast.LENGTH_LONG).show()
+            }
+
+            else if (TextUtils.isEmpty((newName)) || TextUtils.isEmpty((newAddress))) {
+                // update only the address; name remains unchanged
+                if (TextUtils.isEmpty((newName)) && !TextUtils.isEmpty((newAddress))) {
+                    updateTruck(truckId, truckName, newAddress)
+                    Toast.makeText(this, "Truck address updated", Toast.LENGTH_LONG).show()
+                    alertWindow.dismiss()
+                }
+
+                // update only name; address remains unchanged
+                else if (!TextUtils.isEmpty((newName)) && TextUtils.isEmpty((newAddress))) {
+                    updateTruck(truckId, newName, truckAddress)
+                    Toast.makeText(this, "Truck name updated", Toast.LENGTH_LONG).show()
+                    alertWindow.dismiss()
+                }
+
+                else if (TextUtils.isEmpty(newName) && TextUtils.isEmpty(newAddress)) {
+                    Toast.makeText(this, "Please enter a new name or address", Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+        updateView.deleteTruckButton.setOnClickListener(View.OnClickListener {
+            truckDao.deleteTruckById(truckId)
+            Toast.makeText(this, "Truck deleted from database", Toast.LENGTH_LONG).show()
+            alertWindow.dismiss()
+        })
+    }
+
+    private fun updateTruck(truckId: String, newName: String, newAddress: String) {
+        // TODO: change food list and vendor id
+        val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList, "TEMP")
+        truckDao.updateTruckById(truckId, newTruck)
     }
 
     public override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart() called")
 
+        // truck listener
+        val truckRef = FirebaseDatabase.getInstance().reference.child("trucks").child(intent.getStringExtra("truckId"))
+        truckRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val t = dataSnapshot.value as HashMap<String, Objects>
+
+                // update text for truck name and address
+                val truck = truckDao.constructTruckByHashMap(t)
+                truckName.text = truck.name
+                truckAddress.text = truck.address
+
+                currentTruck.clear()
+                currentTruck.add(truck)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                TODO("not implemented")
+            }
+        })
+
+        // menu listener
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 foodList.clear()
