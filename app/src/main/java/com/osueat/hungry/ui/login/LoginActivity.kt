@@ -56,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
                         // else user is vendor
                         else {
                             val intent = Intent(it, VendorMainActivity::class.java)
+                            intent.putExtra("vendorId", d["id"].toString())
                             startActivity(intent)
                         }
                     } else {

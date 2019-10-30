@@ -55,7 +55,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
             // if truck name/address is provided, add to database
             if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(address)) {
                 // TODO: change food list and vendor id
-                val truck = Truck(UUID.randomUUID().toString(), name.toString(), address.toString(), tempFoodIdList, "TEMP")
+                val truck = Truck(UUID.randomUUID().toString(), name.toString(), address.toString(), tempFoodIdList, this.intent.getStringExtra("vendorId"))
 
                 truckDao.createTruck(truck)
                 truckList.add(truck)
@@ -145,9 +145,11 @@ class VendorAddTruckActivity : AppCompatActivity() {
                 truckList.clear()
 
                 for (t in dataSnapshot.children) {
-                    val truck = t.value as HashMap<String, Objects>
-                    val truckDao = TruckDao()
-                    truckList.add(truckDao.constructTruckByHashMap(truck))
+                    val truck = truckDao.constructTruckByHashMap(t.value as HashMap<String, Objects>)
+
+                    if (truck.vendorId == intent.getStringExtra("vendorId")) {
+                        truckList.add(truck)
+                    }
                 }
 
                 val truckListAdapter = TruckListAdapter(this@VendorAddTruckActivity, truckList)

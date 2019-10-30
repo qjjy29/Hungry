@@ -38,7 +38,9 @@ class VendorMainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         addTruckActivityButton.setOnClickListener(View.OnClickListener {
-            startActivity(Intent(this, VendorAddTruckActivity::class.java))
+            val intent = Intent(this, VendorAddTruckActivity::class.java)
+            intent.putExtra("vendorId", this.intent.getStringExtra("vendorId"))
+            startActivity(intent)
         })
 
         findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
@@ -61,8 +63,11 @@ class VendorMainActivity : AppCompatActivity() {
                 truckList.clear()
 
                 for (t in dataSnapshot.children) {
-                    val truck = t.value as HashMap<String, Objects>
-                    truckList.add(truckDao.constructTruckByHashMap(truck))
+                    val truck = truckDao.constructTruckByHashMap(t.value as HashMap<String, Objects>)
+
+                    if (truck.vendorId == intent.getStringExtra("vendorId")) {
+                        truckList.add(truck)
+                    }
                 }
 
                 val truckListAdapter = TruckListAdapter(this@VendorMainActivity, truckList)
