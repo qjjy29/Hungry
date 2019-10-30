@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.fragment_vendor_main.*
 import android.content.Intent
 import android.util.Log.d
 import android.util.Log
+import android.widget.AdapterView
 import android.widget.ListView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,7 +21,6 @@ import com.osueat.hungry.model.TruckDao
 import com.osueat.hungry.model.TruckListAdapter
 import java.util.*
 import kotlin.collections.HashMap
-
 
 class VendorMainActivity : AppCompatActivity() {
 
@@ -39,6 +39,13 @@ class VendorMainActivity : AppCompatActivity() {
 
         addTruckActivityButton.setOnClickListener(View.OnClickListener {
             startActivity(Intent(this, VendorAddTruckActivity::class.java))
+        })
+
+        findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            val t = truckList.get(i)
+
+            val intent = Intent(this, VendorTruckActivity::class.java)
+            startActivity(intent)
         })
 
         Log.d(TAG, "onCreate() called")
