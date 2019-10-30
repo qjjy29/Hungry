@@ -12,18 +12,18 @@ class OrderDao(private val databaseRef: DatabaseReference) {
 
     private val TAG = "OrderDao"
 
-    private fun constructOrderByHashMap(orderMap: HashMap<String, Objects>): Order {
-        val id = orderMap["id"] as String
-        val customerId = orderMap["customerId"] as String
-        val vendorId = orderMap["vendorId"] as String
-        val truckId = orderMap["truckId"] as String
-        val orderedFoodList = orderMap["orderedFoodList"] as List<OrderedFood>
-        val status = orderMap["status"] as String
-        val price = orderMap["price"] as Double
-        val createDate = orderMap["createDate"] as Long
-        val lastUpdateDate = orderMap["lastUpdateDate"] as Long
+    fun constructOrderByHashMap(dataSnapshot: DataSnapshot): Order {
+        val id = dataSnapshot.child("id").value as String
+        val customerId = dataSnapshot.child("customerId").value as String
+        val vendorId = dataSnapshot.child("vendorId").value as String
+        val truckId = dataSnapshot.child("truckId").value as String
+        val orderedFoodList = dataSnapshot.child("orderedFoodList").value as List<OrderedFood>
+        val status = dataSnapshot.child("status").value as String
+        val price = dataSnapshot.child("price").getValue(Double::class.java)
+        val createDate = dataSnapshot.child("createDate").getValue(Date::class.java)
+        val lastUpdateDate = dataSnapshot.child("lastUpdateDate").getValue(Date::class.java)
         return Order(id, customerId, vendorId, truckId, orderedFoodList,
-            status, price, createDate, lastUpdateDate)
+            status, price!!, createDate!!, lastUpdateDate!!)
     }
 
     fun createOrder(order: Order) {

@@ -1,6 +1,7 @@
 package com.osueat.hungry.model
 
 import com.google.firebase.database.IgnoreExtraProperties
+import java.util.*
 
 @IgnoreExtraProperties
 data class Food (
@@ -9,6 +10,6 @@ data class Food (
     val name: String,
     val price: Double,
     val description: String,
-    val createDate: Long,
-    val lastUpdateDate: Long
+    val createDate: Date,
+    val lastUpdateDate: Date
 )

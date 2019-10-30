@@ -12,15 +12,15 @@ class PaymentDao(private val databaseRef: DatabaseReference) {
 
     private val TAG = "PaymentDao"
 
-    private fun constructPaymentByHashMap(paymentMap: HashMap<String, Objects>): Payment {
-        val id = paymentMap["id"] as String
-        val customerId = paymentMap["customerId"] as String
-        val vendorId = paymentMap["verndorId"] as String
-        val orderId = paymentMap["orderId"] as String
-        val amount = paymentMap["amount"] as Double
-        val createDate = paymentMap["createDate"] as Long
-        val lastUpdateDate = paymentMap["lastUpdateDate"] as Long
-        return Payment(id, customerId, vendorId, orderId, amount, createDate, lastUpdateDate)
+    fun constructPaymentByHashMap(dataSnapshot: DataSnapshot): Payment {
+        val id = dataSnapshot.child("id") as String
+        val customerId = dataSnapshot.child("customerId") as String
+        val vendorId = dataSnapshot.child("vendorId") as String
+        val orderId = dataSnapshot.child("orderId") as String
+        val amount = dataSnapshot.child("amount").getValue(Double::class.java)
+        val createDate = dataSnapshot.child("createDate").getValue(Date::class.java)
+        val lastUpdateDate = dataSnapshot.child("lastUpdateDate").getValue(Date::class.java)
+        return Payment(id, customerId, vendorId, orderId, amount!!, createDate!!, lastUpdateDate!!)
     }
 
     fun createPayment(payment: Payment) {

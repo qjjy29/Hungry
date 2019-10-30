@@ -50,9 +50,9 @@ class RegisterActivity : AppCompatActivity() {
                 val ref = FirebaseDatabase.getInstance().reference
                 val userDao = UserDao(ref)
                 val id = UUID.randomUUID().toString()
-                val createDate = Date().time
-                val lastUpdateDate = Date().time
-                val lastLoginDate = Date().time
+                val createDate = Date()
+                val lastUpdateDate = Date()
+                val lastLoginDate = Date()
                 val type = if (vendorCheckBox.isChecked) "VENDOR" else "CUSTOMER"
 
                 val newUser = User(id, username, password, createDate,

@@ -12,18 +12,18 @@ class UserDao(private val databaseRef: DatabaseReference) {
 
     private val TAG = "UserDao"
 
-    private fun constructUserByHashMap(userMap: HashMap<String, Objects>): User {
-        val id = userMap["id"] as String
-        val username = userMap["username"] as String
-        val password = userMap["password"] as String
-        val createDate = userMap["createDate"] as Long
-        val lastLoginDate = userMap["lastLoginDate"] as Long
-        val lastUpdateDate = userMap["lastUpdateDate"] as Long
-        val phoneNumber = userMap["phoneNumber"] as String
-        val email = userMap["email"] as String
-        val type = userMap["type"] as String
-        return User(id, username, password, createDate, lastUpdateDate,
-            lastLoginDate, phoneNumber, email, type)
+    fun constructUserByHashMap(dataSnapshot: DataSnapshot): User {
+        val id = dataSnapshot.child("id") as String
+        val username = dataSnapshot.child("username") as String
+        val password = dataSnapshot.child("password") as String
+        val createDate = dataSnapshot.child("createDate").getValue(Date::class.java)
+        val lastLoginDate = dataSnapshot.child("lastLoginDate").getValue(Date::class.java)
+        val lastUpdateDate = dataSnapshot.child("lastUpdateDate").getValue(Date::class.java)
+        val phoneNumber = dataSnapshot.child("phoneNumber") as String
+        val email = dataSnapshot.child("email") as String
+        val type = dataSnapshot.child("type") as String
+        return User(id, username, password, createDate!!, lastUpdateDate!!,
+            lastLoginDate!!, phoneNumber, email, type)
     }
 
     fun createUser(user: User) {
