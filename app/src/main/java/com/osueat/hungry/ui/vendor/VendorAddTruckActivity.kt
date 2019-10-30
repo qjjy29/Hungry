@@ -34,10 +34,10 @@ class VendorAddTruckActivity : AppCompatActivity() {
     private val TAG = "VendorAddTruckActivity"
 
     val truckList = ArrayList<Truck>()
-    val ref = FirebaseDatabase.getInstance().reference.child("trucks")
+    private val ref = FirebaseDatabase.getInstance().reference.child("trucks")
 
-    val tempFoodIdList = ArrayList<String>()
-    val truckDao = TruckDao()
+    private val tempFoodIdList = ArrayList<String>()
+    private val truckDao = TruckDao()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
