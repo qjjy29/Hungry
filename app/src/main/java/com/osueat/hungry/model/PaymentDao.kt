@@ -13,10 +13,10 @@ class PaymentDao(private val databaseRef: DatabaseReference) {
     private val TAG = "PaymentDao"
 
     fun constructPaymentByHashMap(dataSnapshot: DataSnapshot): Payment {
-        val id = dataSnapshot.child("id") as String
-        val customerId = dataSnapshot.child("customerId") as String
-        val vendorId = dataSnapshot.child("vendorId") as String
-        val orderId = dataSnapshot.child("orderId") as String
+        val id = dataSnapshot.child("id").value as String
+        val customerId = dataSnapshot.child("customerId").value as String
+        val vendorId = dataSnapshot.child("vendorId").value as String
+        val orderId = dataSnapshot.child("orderId").value as String
         val amount = dataSnapshot.child("amount").getValue(Double::class.java)
         val createDate = dataSnapshot.child("createDate").getValue(Date::class.java)
         val lastUpdateDate = dataSnapshot.child("lastUpdateDate").getValue(Date::class.java)

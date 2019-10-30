@@ -13,9 +13,9 @@ class SubscribeDao(private val databaseRef: DatabaseReference) {
     private val TAG = "SubscribeDao"
 
     fun constructSubscribeByHashMap(dataSnapshot: DataSnapshot): Subscribe {
-        val id = dataSnapshot.child("id") as String
-        val customerId = dataSnapshot.child("customerId") as String
-        val truckId = dataSnapshot.child("truckId") as String
+        val id = dataSnapshot.child("id").value as String
+        val customerId = dataSnapshot.child("customerId").value as String
+        val truckId = dataSnapshot.child("truckId").value as String
         val createDate = dataSnapshot.child("createDate").getValue(Date::class.java)
         return Subscribe(id, customerId, truckId, createDate!!)
     }

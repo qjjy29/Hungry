@@ -24,6 +24,7 @@ import com.osueat.hungry.R
 import com.osueat.hungry.RegisterActivity
 import com.osueat.hungry.model.Customer
 import com.osueat.hungry.model.User
+import com.osueat.hungry.model.UserDao
 import com.osueat.hungry.ui.vendor.VendorMainActivity
 import java.util.*
 import kotlin.collections.HashMap
@@ -40,16 +41,24 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var register: Button
 
 
-    fun auth(username: String, password: String, it: Context) {
-        val ref = FirebaseDatabase.getInstance().reference.child("users")
+    private fun auth(username: String, password: String, it: Context) {
+        val ref = FirebaseDatabase.getInstance().reference
+        val userDao = UserDao(ref)
         Log.d(TAG, "auth")
-        ref.orderByChild("username").equalTo(username).addValueEventListener(object: ValueEventListener {
+        ref.child("users").orderByChild("username").equalTo(username)
+            .addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (dataSnapshotChild in dataSnapshot.children) {
-                    val d = dataSnapshotChild.value as HashMap<String, Objects>
-                    if (d["password"]!! as String == password) {
+                    val currentUser = userDao.constructUserByHashMap(dataSnapshotChild)
+                    if (currentUser.password == password) {
+                        // update the lastLoginDate
+                        val userDao = UserDao(ref)
+                        val updatedUser = User(currentUser.id, currentUser.username, currentUser.password,
+                            currentUser.createDate, Date(), currentUser.lastUpdateDate,
+                            currentUser.phoneNumber, currentUser.email, currentUser.type)
+                        userDao.updateUserById(currentUser.id, updatedUser)
                         // check if user is customer
-                        if (d["type"].toString() == "CUSTOMER") {
+                        if (currentUser.type == "CUSTOMER") {
                             val intent = Intent(it, MainActivity::class.java)
                             startActivity(intent)
                         }
@@ -62,6 +71,8 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(applicationContext, "Invalid username/password, please try again",
                             Toast.LENGTH_LONG).show()
                     }
+//                    val intent = Intent(it, MainActivity::class.java)
+//                    startActivity(intent)
                     break
                 }
                 loading.visibility = View.INVISIBLE

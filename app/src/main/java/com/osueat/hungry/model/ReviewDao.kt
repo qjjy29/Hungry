@@ -13,12 +13,12 @@ class ReviewDao(private val databaseRef: DatabaseReference) {
     private val TAG = "ReviewDao"
 
     fun constructReviewByHashMap(dataSnapshot: DataSnapshot): Review {
-        val id = dataSnapshot.child("id") as String
-        val customerId = dataSnapshot.child("customerId") as String
-        val truckId = dataSnapshot.child("truckId") as String
-        val customerNickname = dataSnapshot.child("customerNickname") as String
-        val content = dataSnapshot.child("content") as String
-        val star = dataSnapshot.child("star") as Int
+        val id = dataSnapshot.child("id").value as String
+        val customerId = dataSnapshot.child("customerId").value as String
+        val truckId = dataSnapshot.child("truckId").value as String
+        val customerNickname = dataSnapshot.child("customerNickname").value as String
+        val content = dataSnapshot.child("content").value as String
+        val star = dataSnapshot.child("star").value as Int
         val createDate = dataSnapshot.child("createDate").getValue(Date::class.java)
         return Review(id, customerId, truckId, customerNickname, content, star, createDate!!)
     }
