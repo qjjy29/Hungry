@@ -6,6 +6,6 @@ data class Food (
     val name : String,
     val price : Double,
     val description : String,
-    val createDate : Int,
-    val lastUpdateDate : Int
+    val createDate : Long,
+    val lastUpdateDate : Long
 )

@@ -34,11 +34,18 @@
         android:layout_height="wrap_content"
         android:text="@string/edit_truck" />
 
+    <Button
+        android:id="@+id/addFoodButton"
+        android:layout_below="@id/editTruckButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_food" />
+
     <TextView
         android:id="@+id/menuLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTruckButton"
+        android:layout_below="@id/addFoodButton"
         android:text="@string/menu"
         android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />

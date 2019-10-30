@@ -19,14 +19,17 @@ import kotlinx.android.synthetic.main.layout_update_delete_truck.view.*
 import java.util.*
 import kotlin.collections.HashMap
 import com.google.firebase.database.DatabaseReference
-
+import kotlinx.android.synthetic.main.activity_vendor_truck.view.*
+import kotlinx.android.synthetic.main.layout_add_food_to_truck.view.*
+import kotlinx.android.synthetic.main.layout_update_delete_truck.view.nameEditText
+import kotlinx.android.synthetic.main.layout_update_delete_truck.view.updateTruckButton
 
 
 class VendorTruckActivity : AppCompatActivity() {
 
     private val TAG = "VendorTruckActivity"
 
-    val foodList = ArrayList<Food>()
+    private val foodList = ArrayList<Food>()
     private val ref = FirebaseDatabase.getInstance().reference.child("food")
 
     private val foodDao = FoodDao()
@@ -48,6 +51,10 @@ class VendorTruckActivity : AppCompatActivity() {
 
         editTruckButton.setOnClickListener(View.OnClickListener {
             createUpdateTruckWindow(currentTruck[0].id, currentTruck[0].name, currentTruck[0].address)
+        })
+
+        addFoodButton.setOnClickListener(View.OnClickListener {
+            createAddFoodWindow()
         })
     }
 
@@ -100,6 +107,49 @@ class VendorTruckActivity : AppCompatActivity() {
         })
     }
 
+    private fun createAddFoodWindow() {
+        val alertDialog = AlertDialog.Builder(this@VendorTruckActivity)
+        val addFoodView = layoutInflater.inflate(R.layout.layout_add_food_to_truck, null)
+        alertDialog.setView(addFoodView)
+        alertDialog.setTitle("New Food")
+        val alertWindow = alertDialog.create()
+        alertWindow.show()
+
+        addFoodView.addNewFoodButton.setOnClickListener (View.OnClickListener {
+
+            val name = addFoodView.nameEditText.text.toString()
+            val price = addFoodView.priceEditText.text.toString()
+            val description = addFoodView.descriptionEditText.text.toString()
+
+            if (TextUtils.isEmpty(name)) {
+                Toast.makeText(this, "Please enter a name for the food", Toast.LENGTH_LONG).show()
+            }
+
+            else if (TextUtils.isEmpty(price)) {
+                Toast.makeText(this, "Please enter a price for the food", Toast.LENGTH_LONG).show()
+            }
+
+            else if (TextUtils.isEmpty(description)) {
+                Toast.makeText(this, "Please enter a description for the food", Toast.LENGTH_LONG).show()
+            }
+
+            else {
+                // todo: change createDate and updateDate
+                val food = Food(UUID.randomUUID().toString(), this.intent.getStringExtra("truckId"),
+                    name, price.toDouble(), description, 111, 111)
+
+                foodDao.createFood(food)
+                foodList.add(food)
+                alertWindow.dismiss()
+            }
+        })
+
+
+        addFoodView.cancelButton.setOnClickListener (View.OnClickListener {
+            alertWindow.dismiss()
+        })
+    }
+
     private fun updateTruck(truckId: String, newName: String, newAddress: String) {
         // TODO: change food list and vendor id
         val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList, "TEMP")
@@ -136,8 +186,11 @@ class VendorTruckActivity : AppCompatActivity() {
                 foodList.clear()
 
                 for (f in dataSnapshot.children) {
-                    val food = f.value as HashMap<String, Objects>
-                    foodList.add(foodDao.constructFoodByHashMap(food))
+                    val food = foodDao.constructFoodByHashMap(f.value as HashMap<String, Objects>)
+
+                    if (food.truckId == intent.getStringExtra("truckId")) {
+                        foodList.add(food)
+                    }
                 }
 
                 val foodListAdapter = FoodListAdapter(this@VendorTruckActivity, foodList)
