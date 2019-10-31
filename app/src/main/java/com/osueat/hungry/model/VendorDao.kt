@@ -9,13 +9,13 @@ import kotlin.collections.HashMap
 
 class VendorDao(private val databaseRef: DatabaseReference) {
 
-    private fun constructVendorByHashMap(vendorMap: HashMap<String, Objects>): Vendor {
-        val id = vendorMap["id"] as String
-        val userId = vendorMap["userId"] as String
-        val nickname = vendorMap["nickname"] as String
-        val truckIdList = vendorMap["truckIdList"] as List<String>
-        val balance = vendorMap["balance"] as Double
-        return Vendor(id, userId, nickname, truckIdList, balance)
+    private fun constructVendorByHashMap(dataSnapshot: DataSnapshot): Vendor {
+        val id = dataSnapshot.child("id").value as String
+        val userId = dataSnapshot.child("userId").value as String
+        val nickname = dataSnapshot.child("nickname").value as String
+        val truckIdList = dataSnapshot.child("truckIdList").value as List<String>
+        val balance = dataSnapshot.child("balance").getValue(Double::class.java)
+        return Vendor(id, userId, nickname, truckIdList, balance!!)
     }
 
     fun createVendor(vendor: Vendor) {

@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_vendor_truck.view.*
 import kotlinx.android.synthetic.main.layout_add_food_to_truck.view.*
 import kotlinx.android.synthetic.main.layout_update_delete_truck.view.nameEditText
 import kotlinx.android.synthetic.main.layout_update_delete_truck.view.updateTruckButton
+import java.util.Calendar
 
 
 class VendorTruckActivity : AppCompatActivity() {
@@ -32,7 +33,7 @@ class VendorTruckActivity : AppCompatActivity() {
     private val foodList = ArrayList<Food>()
     private val ref = FirebaseDatabase.getInstance().reference.child("food")
 
-    private val foodDao = FoodDao()
+    private val foodDao = FoodDao(ref)
     private val truckDao = TruckDao()
     private val tempFoodIdList = ArrayList<String>()
 
@@ -136,7 +137,7 @@ class VendorTruckActivity : AppCompatActivity() {
             else {
                 // todo: change createDate and updateDate
                 val food = Food(UUID.randomUUID().toString(), this.intent.getStringExtra("truckId"),
-                    name, price.toDouble(), description, 111, 111)
+                    name, price.toDouble(), description, Calendar.getInstance().time, Calendar.getInstance().time)
 
                 foodDao.createFood(food)
                 foodList.add(food)
@@ -186,7 +187,7 @@ class VendorTruckActivity : AppCompatActivity() {
                 foodList.clear()
 
                 for (f in dataSnapshot.children) {
-                    val food = foodDao.constructFoodByHashMap(f.value as HashMap<String, Objects>)
+                    val food = foodDao.constructFoodByHashMap(f)
 
                     if (food.truckId == intent.getStringExtra("truckId")) {
                         foodList.add(food)

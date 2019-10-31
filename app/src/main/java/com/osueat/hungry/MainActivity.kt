@@ -10,10 +10,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.osueat.hungry.model.User
+import com.google.firebase.database.ValueEventListener
+import com.osueat.hungry.model.*
 import java.util.*
-import com.osueat.hungry.model.UserDao
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,6 +45,43 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.d(TAG, "onCreate() called")
+
+        // test orderedfood
+        val orderedFood1 = OrderedFood("1", 1)
+        val orderedFood2 = OrderedFood("2", 1)
+        val orderedFoodList = listOf(orderedFood1, orderedFood2)
+        val id = "13"
+        val customerId = "15"
+        val vendorId = "18"
+        val truckId = "213"
+        val status = "Pending"
+        val price = 6.0
+        val createDate = Date()
+        val lastUpdateDate = Date()
+        val order = Order(
+            id, customerId, vendorId, truckId, orderedFoodList,
+            status, price, createDate, lastUpdateDate
+        )
+        val ref = FirebaseDatabase.getInstance().reference
+        val orderDao = OrderDao(ref)
+        orderDao.createOrder(order)
+
+
+        ref.child("orders").child(id).addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val result = dataSnapshot.value
+                Log.d(TAG, result.toString())
+                if (result != null) {
+                    val order = orderDao.constructOrderByHashMap(dataSnapshot)
+                    Log.d(TAG, order.toString())
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("The read failed: " + databaseError.code)
+            }
+        })
     }
 
     public override fun onStart() {

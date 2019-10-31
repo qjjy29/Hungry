@@ -8,35 +8,35 @@ import com.google.firebase.database.ValueEventListener
 import java.util.*
 import kotlin.collections.HashMap
 
-class FoodDao(private val databaseRef: DatabaseReference) {
+class ReviewDao(private val databaseRef: DatabaseReference) {
 
-    private val TAG = "FoodDao"
+    private val TAG = "ReviewDao"
 
-    public fun constructFoodByHashMap(dataSnapshot: DataSnapshot): Food {
+    fun constructReviewByHashMap(dataSnapshot: DataSnapshot): Review {
         val id = dataSnapshot.child("id").value as String
+        val customerId = dataSnapshot.child("customerId").value as String
         val truckId = dataSnapshot.child("truckId").value as String
-        val name = dataSnapshot.child("name").value as String
-        val price = dataSnapshot.child("price").getValue(Double::class.java)
-        val description = dataSnapshot.child("description").value as String
+        val customerNickname = dataSnapshot.child("customerNickname").value as String
+        val content = dataSnapshot.child("content").value as String
+        val star = dataSnapshot.child("star").value as Int
         val createDate = dataSnapshot.child("createDate").getValue(Date::class.java)
-        val lastUpdateDate = dataSnapshot.child("lastUpdateDate").getValue(Date::class.java)
-        return Food(id, truckId, name, price!!, description, createDate!!, lastUpdateDate!!)
+        return Review(id, customerId, truckId, customerNickname, content, star, createDate!!)
     }
 
-    fun createFood(food: Food) {
-        databaseRef.child("food").child(food.id).setValue(food)
-        Log.d(TAG, food.name)
+    fun createReview(review: Review) {
+        databaseRef.child("reviews").child(review.id).setValue(review)
+        Log.d(TAG, review.id)
     }
 
-    fun updateFoodById(id: String, food: Food) {
-        databaseRef.child("food").child(id).addListenerForSingleValueEvent(object :
+    fun updateReviewById(id: String, review: Review) {
+        databaseRef.child("reviews").child(id).addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val result = dataSnapshot.value
                 Log.d(TAG, result.toString())
                 if (result != null) {
-                    databaseRef.child("food").child(id).setValue(food)
-                    Log.d(TAG, "food updated")
+                    databaseRef.child("reviews").child(id).setValue(review)
+                    Log.d(TAG, "review updated")
                 }
             }
 
@@ -46,13 +46,13 @@ class FoodDao(private val databaseRef: DatabaseReference) {
         })
     }
 
-    fun deleteFoodById(id: String) {
-        databaseRef.child("food").child(id).addListenerForSingleValueEvent(object :
+    fun deleteReviewById(id: String) {
+        databaseRef.child("reviews").child(id).addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val result = dataSnapshot.value
                 if (result != null) {
-                    databaseRef.child("food").child(id).removeValue()
+                    databaseRef.child("reviews").child(id).removeValue()
                 }
             }
 

@@ -9,12 +9,12 @@ import kotlin.collections.HashMap
 
 class CustomerDao(private val databaseRef: DatabaseReference) {
 
-    private fun constructCustomerByHashMap(customerMap: HashMap<String, Objects>): Customer {
-        val id = customerMap["id"] as String
-        val userId = customerMap["userId"] as String
-        val nickname = customerMap["nickname"] as String
-        val balance = customerMap["balance"] as Double
-        return Customer(id, userId, nickname, balance)
+    fun constructCustomerByHashMap(dataSnapshot: DataSnapshot): Customer {
+        val id = dataSnapshot.child("id").value as String
+        val userId = dataSnapshot.child("userId").value as String
+        val nickname = dataSnapshot.child("nickname").value as String
+        val balance = dataSnapshot.child("balance").getValue(Double::class.java)
+        return Customer(id, userId, nickname, balance!!)
     }
 
     fun createCustomer(customer: Customer) {
