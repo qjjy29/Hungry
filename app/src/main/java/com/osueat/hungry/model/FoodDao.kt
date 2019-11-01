@@ -24,18 +24,18 @@ class FoodDao(private val databaseRef: DatabaseReference) {
     }
 
     fun createFood(food: Food) {
-        databaseRef.child("food").child(food.id).setValue(food)
+        databaseRef.child("foods").child(food.id).setValue(food)
         Log.d(TAG, food.name)
     }
 
     fun updateFoodById(id: String, food: Food) {
-        databaseRef.child("food").child(id).addListenerForSingleValueEvent(object :
+        databaseRef.child("foods").child(id).addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val result = dataSnapshot.value
                 Log.d(TAG, result.toString())
                 if (result != null) {
-                    databaseRef.child("food").child(id).setValue(food)
+                    databaseRef.child("foods").child(id).setValue(food)
                     Log.d(TAG, "food updated")
                 }
             }
@@ -47,12 +47,12 @@ class FoodDao(private val databaseRef: DatabaseReference) {
     }
 
     fun deleteFoodById(id: String) {
-        databaseRef.child("food").child(id).addListenerForSingleValueEvent(object :
+        databaseRef.child("foods").child(id).addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val result = dataSnapshot.value
                 if (result != null) {
-                    databaseRef.child("food").child(id).removeValue()
+                    databaseRef.child("foods").child(id).removeValue()
                 }
             }
 

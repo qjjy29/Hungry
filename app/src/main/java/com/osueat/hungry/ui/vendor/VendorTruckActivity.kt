@@ -31,7 +31,7 @@ class VendorTruckActivity : AppCompatActivity() {
     private val TAG = "VendorTruckActivity"
 
     private val foodList = ArrayList<Food>()
-    private val ref = FirebaseDatabase.getInstance().reference.child("food")
+    private val ref = FirebaseDatabase.getInstance().reference
 
     private val foodDao = FoodDao(ref)
     private val truckDao = TruckDao()
@@ -165,10 +165,8 @@ class VendorTruckActivity : AppCompatActivity() {
         val truckRef = FirebaseDatabase.getInstance().reference.child("trucks").child(intent.getStringExtra("truckId"))
         truckRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val t = dataSnapshot.value as HashMap<String, Objects>
-
                 // update text for truck name and address
-                val truck = truckDao.constructTruckByHashMap(t)
+                val truck = truckDao.constructTruckByHashMap(dataSnapshot)
                 truckName.text = truck.name
                 truckAddress.text = truck.address
 
@@ -182,7 +180,7 @@ class VendorTruckActivity : AppCompatActivity() {
         })
 
         // menu listener
-        ref.addValueEventListener(object : ValueEventListener {
+        ref.child("foods").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 foodList.clear()
 

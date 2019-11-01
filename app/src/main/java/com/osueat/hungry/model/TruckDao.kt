@@ -13,12 +13,12 @@ class TruckDao {
     val truckList = ArrayList<Truck>()
     val ref = FirebaseDatabase.getInstance().reference.child("trucks")
 
-    fun constructTruckByHashMap(truckMap: HashMap<String, Objects>): Truck {
-        val id = truckMap["id"] as String
-        val name = truckMap["name"] as String
-        val address = truckMap["address"] as String
-        val foodIdList = truckMap["foodIdList"] as ArrayList<String>
-        val vendorId = truckMap["vendorId"] as String
+    fun constructTruckByHashMap(dataSnapshot: DataSnapshot): Truck {
+        val id = dataSnapshot.child("id").value as String
+        val name = dataSnapshot.child("name").value as String
+        val address = dataSnapshot.child("address").value as String
+        val foodIdList = dataSnapshot.child("foodIdList").value as ArrayList<String>
+        val vendorId = dataSnapshot.child("vendorId").value  as String
         return Truck(id, name, address, foodIdList, vendorId)
     }
 

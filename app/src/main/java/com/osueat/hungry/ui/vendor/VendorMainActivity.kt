@@ -63,7 +63,7 @@ class VendorMainActivity : AppCompatActivity() {
                 truckList.clear()
 
                 for (t in dataSnapshot.children) {
-                    val truck = truckDao.constructTruckByHashMap(t.value as HashMap<String, Objects>)
+                    val truck = truckDao.constructTruckByHashMap(t)
 
                     if (truck.vendorId == intent.getStringExtra("vendorId")) {
                         truckList.add(truck)
