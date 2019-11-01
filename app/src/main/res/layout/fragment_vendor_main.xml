@@ -1,61 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/acrivity_vendor_add_truck"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.vendor.VendorMainActivityFragment"
-    tools:showIn="@layout/activity_vendor_main">
-
-    <Button
-        android:id="@+id/orderButton4"
-        android:layout_width="398dp"
-        android:layout_height="69dp"
-        android:text="Order #00003"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.538"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderButton3" />
-
-    <Button
-        android:id="@+id/orderButton3"
-        android:layout_width="398dp"
-        android:layout_height="69dp"
-        android:text="Order #00002"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.538"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderButton2" />
-
-    <Button
-        android:id="@+id/orderButton2"
-        android:layout_width="398dp"
-        android:layout_height="69dp"
-        android:text="Order #00001"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.461"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderButton1" />
-
-    <Button
-        android:id="@+id/orderButton1"
-        android:layout_width="398dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="16dp"
-        android:text="Order #00000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.461"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".ui.vendor.VendorAddTruckActivity">
 
     <Button
         android:id="@+id/addTruckActivityButton"
-        android:layout_width="398dp"
-        android:layout_height="69dp"
-        android:text="Add Truck"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.461"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderButton4" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_truck" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/truckLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addTruckActivityButton"
+        android:text="@string/trucks"
+        android:textAlignment="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+
+    <ListView
+        android:id="@+id/truckListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/truckLabel"></ListView>
+
+</RelativeLayout>

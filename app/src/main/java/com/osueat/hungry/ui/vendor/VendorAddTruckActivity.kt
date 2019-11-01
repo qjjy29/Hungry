@@ -12,19 +12,17 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.R
-import com.osueat.hungry.model.Truck
 import kotlinx.android.synthetic.main.activity_vendor_add_truck.*
 import android.nfc.Tag
-import com.osueat.hungry.model.TruckDao
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import com.osueat.hungry.MainActivity
 import android.text.method.TextKeyListener.clear
-import com.osueat.hungry.model.TruckListAdapter
 import android.view.LayoutInflater
 import android.app.AlertDialog
 import android.widget.*
+import com.osueat.hungry.model.*
 import kotlinx.android.synthetic.main.activity_vendor_add_truck.addressEditText
 import kotlinx.android.synthetic.main.activity_vendor_add_truck.nameEditText
 import kotlinx.android.synthetic.main.layout_update_delete_truck.*
@@ -36,11 +34,18 @@ class VendorAddTruckActivity : AppCompatActivity() {
     private val TAG = "VendorAddTruckActivity"
 
     val truckList = ArrayList<Truck>()
-    val ref = FirebaseDatabase.getInstance().reference.child("trucks")
+    private val ref = FirebaseDatabase.getInstance().reference.child("trucks")
+
+    private val tempFoodIdList = ArrayList<String>()
+    private val truckDao = TruckDao()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vendor_add_truck)
+
+        tempFoodIdList.add("testID_1")
+        tempFoodIdList.add("testID_2")
+        tempFoodIdList.add("testID_3")
 
         // add truck to database when save button pressed
         saveButton.setOnClickListener(View.OnClickListener {
@@ -49,11 +54,10 @@ class VendorAddTruckActivity : AppCompatActivity() {
 
             // if truck name/address is provided, add to database
             if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(address)) {
-                val id = ref.push().key
-                val truck = Truck(id.toString(), name.toString(), address.toString())
+                // TODO: change food list and vendor id
+                val truck = Truck(UUID.randomUUID().toString(), name.toString(), address.toString(), tempFoodIdList, this.intent.getStringExtra("vendorId"))
 
-                // add truck to database
-                ref.child(id.toString()).setValue(truck)
+                truckDao.createTruck(truck)
                 truckList.add(truck)
 
                 // reset edit texts
@@ -72,7 +76,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
         // add on click listener to list view buttons to go to truck page
         findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val t = truckList.get(i)
-            createUpdateTruckWindow(t.getId(), t.getName(), t.getAddress())
+            createUpdateTruckWindow(t.id, t.name, t.address)
         })
 
     }
@@ -120,21 +124,16 @@ class VendorAddTruckActivity : AppCompatActivity() {
         })
 
         updateView.deleteTruckButton.setOnClickListener(View.OnClickListener {
-            deleteTruck(truckId)
+            truckDao.deleteTruckById(truckId)
             Toast.makeText(this, "Truck deleted from database", Toast.LENGTH_LONG).show()
             alertWindow.dismiss()
         })
     }
 
     private fun updateTruck(truckId: String, newName: String, newAddress: String) {
-        val truckRef = FirebaseDatabase.getInstance().getReference("trucks").child(truckId)
-        val newTruck = Truck(truckId, newName, newAddress)
-        truckRef.setValue(newTruck)
-    }
-
-    private fun deleteTruck(truckId : String) {
-        val truckRef = FirebaseDatabase.getInstance().getReference("trucks").child(truckId)
-        truckRef.removeValue()
+        // TODO: change food list and vendor id
+        val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList, "TEMP")
+        truckDao.updateTruckById(truckId, newTruck)
     }
 
     public override fun onStart() {
@@ -146,9 +145,11 @@ class VendorAddTruckActivity : AppCompatActivity() {
                 truckList.clear()
 
                 for (t in dataSnapshot.children) {
-                    val truck = t.value as HashMap<String, Objects>
-                    val truckDao = TruckDao()
-                    truckList.add(truckDao.constructTruckByHashMap(truck))
+                    val truck = truckDao.constructTruckByHashMap(t)
+
+                    if (truck.vendorId == intent.getStringExtra("vendorId")) {
+                        truckList.add(truck)
+                    }
                 }
 
                 val truckListAdapter = TruckListAdapter(this@VendorAddTruckActivity, truckList)

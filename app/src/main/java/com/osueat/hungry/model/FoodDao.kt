@@ -12,7 +12,7 @@ class FoodDao(private val databaseRef: DatabaseReference) {
 
     private val TAG = "FoodDao"
 
-    private fun constructFoodByHashMap(dataSnapshot: DataSnapshot): Food {
+    public fun constructFoodByHashMap(dataSnapshot: DataSnapshot): Food {
         val id = dataSnapshot.child("id").value as String
         val truckId = dataSnapshot.child("truckId").value as String
         val name = dataSnapshot.child("name").value as String

@@ -18,8 +18,8 @@ class TruckListAdapter(private val context: Activity, internal var truckList: Li
         val nameTextView = listViewItem.findViewById(R.id.nameTextView) as TextView
         val addressTextView = listViewItem.findViewById(R.id.addressTextView) as TextView
         val truck = truckList[position]
-        nameTextView.text = truck.getName()
-        addressTextView.text = truck.getAddress()
+        nameTextView.text = truck.name
+        addressTextView.text = truck.address
 
         return listViewItem
     }

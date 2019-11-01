@@ -9,47 +9,47 @@ import kotlinx.android.synthetic.main.fragment_vendor_main.*
 import android.content.Intent
 import android.util.Log.d
 import android.util.Log
-
+import android.widget.AdapterView
+import android.widget.ListView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.osueat.hungry.R
+import com.osueat.hungry.model.Truck
+import com.osueat.hungry.model.TruckDao
+import com.osueat.hungry.model.TruckListAdapter
+import java.util.*
+import kotlin.collections.HashMap
 
 class VendorMainActivity : AppCompatActivity() {
 
     private val TAG = "VendorMainActivity"
+
+    val truckList = ArrayList<Truck>()
+    private val ref = FirebaseDatabase.getInstance().reference.child("trucks")
+
+    private val tempFoodIdList = ArrayList<String>()
+    private val truckDao = TruckDao()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.osueat.hungry.R.layout.activity_vendor_main)
         setSupportActionBar(toolbar)
 
-        orderButton1.setOnClickListener(View.OnClickListener {
-            d("Order Button", "Pressed order button.")
-            startActivity(Intent(this, VendorOrderActivity::class.java))
-        })
-
-        orderButton2.setOnClickListener(View.OnClickListener {
-            d("Order Button", "Pressed order button.")
-            startActivity(Intent(this, VendorOrderActivity::class.java))
-        })
-
-        orderButton3.setOnClickListener(View.OnClickListener {
-            d("Order Button", "Pressed order button.")
-            startActivity(Intent(this, VendorOrderActivity::class.java))
-        })
-
-        orderButton4.setOnClickListener(View.OnClickListener {
-            d("Order Button", "Pressed order button.")
-            startActivity(Intent(this, VendorOrderActivity::class.java))
-        })
-
         addTruckActivityButton.setOnClickListener(View.OnClickListener {
-            startActivity(Intent(this, VendorAddTruckActivity::class.java))
+            val intent = Intent(this, VendorAddTruckActivity::class.java)
+            intent.putExtra("vendorId", this.intent.getStringExtra("vendorId"))
+            startActivity(intent)
         })
 
-        // create a sample truck to add to the database
-        //val db = FirebaseDatabase.getInstance().reference
-        //val t = Truck("Sample Truck")
-        //val truckDB = TruckDatabaseManager(db)
+        findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            val t = truckList.get(i)
 
-        //truckDB.createTruck(t)
+            val intent = Intent(this, VendorTruckActivity::class.java)
+            intent.putExtra("truckId", t.id)
+            startActivity(intent)
+        })
 
         Log.d(TAG, "onCreate() called")
     }
@@ -57,6 +57,27 @@ class VendorMainActivity : AppCompatActivity() {
     public override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart() called")
+
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                truckList.clear()
+
+                for (t in dataSnapshot.children) {
+                    val truck = truckDao.constructTruckByHashMap(t)
+
+                    if (truck.vendorId == intent.getStringExtra("vendorId")) {
+                        truckList.add(truck)
+                    }
+                }
+
+                val truckListAdapter = TruckListAdapter(this@VendorMainActivity, truckList)
+                findViewById<ListView>(R.id.truckListView).adapter = truckListAdapter
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                TODO("not implemented")
+            }
+        })
     }
 
     public override fun onResume() {
