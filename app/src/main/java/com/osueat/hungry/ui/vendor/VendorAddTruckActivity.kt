@@ -34,18 +34,16 @@ class VendorAddTruckActivity : AppCompatActivity() {
     private val TAG = "VendorAddTruckActivity"
 
     val truckList = ArrayList<Truck>()
-    private val ref = FirebaseDatabase.getInstance().reference.child("trucks")
+    private val ref = FirebaseDatabase.getInstance().reference
 
     private val tempFoodIdList = ArrayList<String>()
-    private val truckDao = TruckDao()
+    private val truckDao = TruckDao(ref)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vendor_add_truck)
 
-        tempFoodIdList.add("testID_1")
-        tempFoodIdList.add("testID_2")
-        tempFoodIdList.add("testID_3")
+        tempFoodIdList.add("")
 
         // add truck to database when save button pressed
         saveButton.setOnClickListener(View.OnClickListener {
@@ -143,7 +141,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
         super.onStart()
         Log.d(TAG, "onStart() called")
 
-        ref.addValueEventListener(object : ValueEventListener {
+        ref.child("trucks").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 truckList.clear()
 

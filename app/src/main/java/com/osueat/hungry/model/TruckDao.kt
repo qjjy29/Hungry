@@ -1,17 +1,13 @@
 package com.osueat.hungry.model
 
 import android.widget.ListView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.osueat.hungry.R
 import java.util.*
 
-class TruckDao {
+class TruckDao(private val databaseRef: DatabaseReference) {
 
     val truckList = ArrayList<Truck>()
-    val ref = FirebaseDatabase.getInstance().reference.child("trucks")
 
     fun constructTruckByHashMap(dataSnapshot: DataSnapshot): Truck {
         val id = dataSnapshot.child("id").value as String
@@ -25,15 +21,15 @@ class TruckDao {
 
     fun createTruck(truck: Truck) {
         val id = truck.id
-        ref.child(id).setValue(truck)
+        databaseRef.child("trucks").child(id).setValue(truck)
         truckList.add(truck)
     }
 
     fun updateTruckById(truckId: String, newTruck: Truck) {
-        ref.child(truckId).setValue(newTruck)
+        databaseRef.child("trucks").child(truckId).setValue(newTruck)
     }
 
     fun deleteTruckById(truckId: String) {
-        ref.child(truckId).removeValue()
+        databaseRef.child("trucks").child(truckId).removeValue()
     }
 }

@@ -34,8 +34,8 @@ class VendorTruckActivity : AppCompatActivity() {
     private val ref = FirebaseDatabase.getInstance().reference
 
     private val foodDao = FoodDao(ref)
-    private val truckDao = TruckDao()
-    private val tempFoodIdList = ArrayList<String>()
+    private val truckDao = TruckDao(ref)
+    private val foodIdList = ArrayList<String>()
 
     // todo: change this probably
     private val currentTruck = ArrayList<Truck>()
@@ -44,9 +44,7 @@ class VendorTruckActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vendor_truck)
 
-        tempFoodIdList.add("testID_1")
-        tempFoodIdList.add("testID_2")
-        tempFoodIdList.add("testID_3")
+        foodIdList.add("")
 
         //Toast.makeText(this, this.intent.getStringExtra("truckId"), Toast.LENGTH_LONG).show()
 
@@ -139,9 +137,17 @@ class VendorTruckActivity : AppCompatActivity() {
             }
 
             else {
-                // todo: change createDate and updateDate
                 val food = Food(UUID.randomUUID().toString(), this.intent.getStringExtra("truckId"),
                     name, price.toDouble(), description, Calendar.getInstance().time, Calendar.getInstance().time)
+
+                if (foodIdList[0] == "") {
+                    foodIdList[0] = food.id
+                } else {
+                    foodIdList.add(food.id)
+                }
+
+                // add food id to truck
+                ref.child("trucks").child(this.intent.getStringExtra("truckId")).child("foodIdList").setValue(foodIdList)
 
                 foodDao.createFood(food)
                 foodList.add(food)
@@ -157,7 +163,7 @@ class VendorTruckActivity : AppCompatActivity() {
 
     private fun updateTruck(truckId: String, newName: String, newAddress: String, isActive : Boolean) {
         // TODO: change food list
-        val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList, intent.getStringExtra("vendorId"), isActive)
+        val newTruck = Truck(truckId, newName, newAddress, foodIdList, intent.getStringExtra("vendorId"), isActive)
         truckDao.updateTruckById(truckId, newTruck)
     }
 
