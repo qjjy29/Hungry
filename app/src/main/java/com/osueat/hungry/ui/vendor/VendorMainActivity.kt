@@ -27,10 +27,10 @@ class VendorMainActivity : AppCompatActivity() {
     private val TAG = "VendorMainActivity"
 
     val truckList = ArrayList<Truck>()
-    private val ref = FirebaseDatabase.getInstance().reference.child("trucks")
+    private val ref = FirebaseDatabase.getInstance().reference
 
     private val tempFoodIdList = ArrayList<String>()
-    private val truckDao = TruckDao()
+    private val truckDao = TruckDao(ref)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +48,7 @@ class VendorMainActivity : AppCompatActivity() {
 
             val intent = Intent(this, VendorTruckActivity::class.java)
             intent.putExtra("truckId", t.id)
+            intent.putExtra("vendorId", this.intent.getStringExtra("vendorId"))
             startActivity(intent)
         })
 
@@ -58,7 +59,7 @@ class VendorMainActivity : AppCompatActivity() {
         super.onStart()
         Log.d(TAG, "onStart() called")
 
-        ref.addValueEventListener(object : ValueEventListener {
+        ref.child("trucks").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 truckList.clear()
 
