@@ -19,7 +19,8 @@ class TruckDao {
         val address = dataSnapshot.child("address").value as String
         val foodIdList = dataSnapshot.child("foodIdList").value as ArrayList<String>
         val vendorId = dataSnapshot.child("vendorId").value  as String
-        return Truck(id, name, address, foodIdList, vendorId)
+        val isActive = dataSnapshot.child("active").getValue(Boolean::class.java)
+        return Truck(id, name, address, foodIdList, vendorId, isActive!!)
     }
 
     fun createTruck(truck: Truck) {

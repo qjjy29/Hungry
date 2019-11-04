@@ -18,6 +18,11 @@
         android:layout_height="wrap_content"
         android:hint="@string/address" />
 
+    <CheckBox android:id="@+id/activeCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/is_active" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

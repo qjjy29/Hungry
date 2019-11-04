@@ -48,6 +48,7 @@ class VendorMainActivity : AppCompatActivity() {
 
             val intent = Intent(this, VendorTruckActivity::class.java)
             intent.putExtra("truckId", t.id)
+            intent.putExtra("vendorId", this.intent.getStringExtra("vendorId"))
             startActivity(intent)
         })
 
