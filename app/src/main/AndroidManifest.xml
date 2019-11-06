@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/cat"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CustomerNearbyTruckActivity"></activity>
+        <activity android:name=".ui.CustomerTruckInfoActivity"></activity>
+        <activity android:name=".CustomerNearbyTruckActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

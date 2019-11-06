@@ -1,13 +1,16 @@
 package com.osueat.hungry
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.AdapterView
 import android.widget.ListView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.osueat.hungry.ui.CustomerTruckInfoActivity
 import com.osueat.hungry.model.Truck
 import com.osueat.hungry.model.TruckDao
 import com.osueat.hungry.model.TruckListAdapter
@@ -23,6 +26,15 @@ class CustomerNearbyTruckActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_customer_nearby_truck)
+
+        findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            val t = truckList[i]
+            var intent = Intent(this, CustomerTruckInfoActivity::class.java)
+            intent.putExtra("foodIdList", t.foodIdList)
+            intent.putExtra("truckId", t.id)
+            intent.putExtra("truckName", t.name)
+            startActivity(intent)
+        })
     }
 
     public override fun onStart() {
