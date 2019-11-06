@@ -34,18 +34,16 @@ class VendorAddTruckActivity : AppCompatActivity() {
     private val TAG = "VendorAddTruckActivity"
 
     val truckList = ArrayList<Truck>()
-    private val ref = FirebaseDatabase.getInstance().reference.child("trucks")
+    private val ref = FirebaseDatabase.getInstance().reference
 
     private val tempFoodIdList = ArrayList<String>()
-    private val truckDao = TruckDao()
+    private val truckDao = TruckDao(ref)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vendor_add_truck)
 
-        tempFoodIdList.add("testID_1")
-        tempFoodIdList.add("testID_2")
-        tempFoodIdList.add("testID_3")
+        tempFoodIdList.add("")
 
         // add truck to database when save button pressed
         saveButton.setOnClickListener(View.OnClickListener {
@@ -55,7 +53,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
             // if truck name/address is provided, add to database
             if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(address)) {
                 // TODO: change food list and vendor id
-                val truck = Truck(UUID.randomUUID().toString(), name.toString(), address.toString(), tempFoodIdList, this.intent.getStringExtra("vendorId"))
+                val truck = Truck(UUID.randomUUID().toString(), name.toString(), address.toString(), tempFoodIdList, this.intent.getStringExtra("vendorId"), false)
 
                 truckDao.createTruck(truck)
                 truckList.add(truck)
@@ -76,12 +74,12 @@ class VendorAddTruckActivity : AppCompatActivity() {
         // add on click listener to list view buttons to go to truck page
         findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val t = truckList.get(i)
-            createUpdateTruckWindow(t.id, t.name, t.address)
+            createUpdateTruckWindow(t.id, t.name, t.address, t.isActive)
         })
 
     }
 
-    private fun createUpdateTruckWindow(truckId: String, truckName: String, truckAddress: String) {
+    private fun createUpdateTruckWindow(truckId: String, truckName: String, truckAddress: String, truckActiveStatus : Boolean) {
         val alertDialog = AlertDialog.Builder(this@VendorAddTruckActivity)
         val updateView = layoutInflater.inflate(R.layout.layout_update_delete_truck, null)
         alertDialog.setView(updateView)
@@ -94,31 +92,34 @@ class VendorAddTruckActivity : AppCompatActivity() {
         updateView.updateTruckButton.setOnClickListener(View.OnClickListener {
             val newName = updateView.nameEditText.text.toString()
             val newAddress = updateView.addressEditText.text.toString()
+            val isActive = updateView.activeCheckbox.isChecked
 
-            // update both name and address of truck
-            if (!TextUtils.isEmpty(newName) && !TextUtils.isEmpty(newAddress)) {
-                updateTruck(truckId, newName, newAddress)
+            // update name, address, and status of truck
+            if (!TextUtils.isEmpty(newName) && !TextUtils.isEmpty(newAddress) && isActive == !truckActiveStatus) {
+                updateTruck(truckId, newName, newAddress, isActive)
                 alertWindow.dismiss()
-                Toast.makeText(this, "Truck name and address updated", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Truck name, address, and status updated", Toast.LENGTH_LONG).show()
             }
 
-            else if (TextUtils.isEmpty((newName)) || TextUtils.isEmpty((newAddress))) {
+            else if (TextUtils.isEmpty((newName)) || TextUtils.isEmpty((newAddress)) || isActive == !truckActiveStatus) {
                 // update only the address; name remains unchanged
                 if (TextUtils.isEmpty((newName)) && !TextUtils.isEmpty((newAddress))) {
-                    updateTruck(truckId, truckName, newAddress)
+                    updateTruck(truckId, truckName, newAddress, isActive)
                     Toast.makeText(this, "Truck address updated", Toast.LENGTH_LONG).show()
                     alertWindow.dismiss()
                 }
 
                 // update only name; address remains unchanged
                 else if (!TextUtils.isEmpty((newName)) && TextUtils.isEmpty((newAddress))) {
-                    updateTruck(truckId, newName, truckAddress)
+                    updateTruck(truckId, newName, truckAddress, isActive)
                     Toast.makeText(this, "Truck name updated", Toast.LENGTH_LONG).show()
                     alertWindow.dismiss()
                 }
 
-                else if (TextUtils.isEmpty(newName) && TextUtils.isEmpty(newAddress)) {
-                    Toast.makeText(this, "Please enter a new name or address", Toast.LENGTH_LONG).show()
+                // update only active status of truck
+                else {
+                    updateTruck(truckId, truckName, truckAddress, isActive)
+                    Toast.makeText(this, "Truck status updated", Toast.LENGTH_LONG).show()
                 }
             }
         })
@@ -130,9 +131,9 @@ class VendorAddTruckActivity : AppCompatActivity() {
         })
     }
 
-    private fun updateTruck(truckId: String, newName: String, newAddress: String) {
+    private fun updateTruck(truckId: String, newName: String, newAddress: String, isActive : Boolean) {
         // TODO: change food list and vendor id
-        val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList, "TEMP")
+        val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList,  this.intent.getStringExtra("vendorId"), isActive)
         truckDao.updateTruckById(truckId, newTruck)
     }
 
@@ -140,7 +141,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
         super.onStart()
         Log.d(TAG, "onStart() called")
 
-        ref.addValueEventListener(object : ValueEventListener {
+        ref.child("trucks").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 truckList.clear()
 

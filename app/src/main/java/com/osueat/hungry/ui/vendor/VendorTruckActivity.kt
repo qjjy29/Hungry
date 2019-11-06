@@ -34,8 +34,8 @@ class VendorTruckActivity : AppCompatActivity() {
     private val ref = FirebaseDatabase.getInstance().reference
 
     private val foodDao = FoodDao(ref)
-    private val truckDao = TruckDao()
-    private val tempFoodIdList = ArrayList<String>()
+    private val truckDao = TruckDao(ref)
+    private val foodIdList = ArrayList<String>()
 
     // todo: change this probably
     private val currentTruck = ArrayList<Truck>()
@@ -44,14 +44,12 @@ class VendorTruckActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vendor_truck)
 
-        tempFoodIdList.add("testID_1")
-        tempFoodIdList.add("testID_2")
-        tempFoodIdList.add("testID_3")
+        foodIdList.add("")
 
         //Toast.makeText(this, this.intent.getStringExtra("truckId"), Toast.LENGTH_LONG).show()
 
         editTruckButton.setOnClickListener(View.OnClickListener {
-            createUpdateTruckWindow(currentTruck[0].id, currentTruck[0].name, currentTruck[0].address)
+            createUpdateTruckWindow(currentTruck[0].id, currentTruck[0].name, currentTruck[0].address, currentTruck[0].isActive)
         })
 
         addFoodButton.setOnClickListener(View.OnClickListener {
@@ -59,8 +57,8 @@ class VendorTruckActivity : AppCompatActivity() {
         })
     }
 
-    private fun createUpdateTruckWindow(truckId: String, truckName: String, truckAddress: String) {
-        val alertDialog = AlertDialog.Builder(this@VendorTruckActivity)
+    private fun createUpdateTruckWindow(truckId: String, truckName: String, truckAddress: String, truckActiveStatus : Boolean) {
+        val alertDialog = android.app.AlertDialog.Builder(this@VendorTruckActivity)
         val updateView = layoutInflater.inflate(R.layout.layout_update_delete_truck, null)
         alertDialog.setView(updateView)
         alertDialog.setTitle(truckName)
@@ -72,31 +70,34 @@ class VendorTruckActivity : AppCompatActivity() {
         updateView.updateTruckButton.setOnClickListener(View.OnClickListener {
             val newName = updateView.nameEditText.text.toString()
             val newAddress = updateView.addressEditText.text.toString()
+            val isActive = updateView.activeCheckbox.isChecked
 
-            // update both name and address of truck
-            if (!TextUtils.isEmpty(newName) && !TextUtils.isEmpty(newAddress)) {
-                updateTruck(truckId, newName, newAddress)
+            // update name, address, and status of truck
+            if (!TextUtils.isEmpty(newName) && !TextUtils.isEmpty(newAddress) && isActive == !truckActiveStatus) {
+                updateTruck(truckId, newName, newAddress, isActive)
                 alertWindow.dismiss()
-                Toast.makeText(this, "Truck name and address updated", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Truck name, address, and status updated", Toast.LENGTH_LONG).show()
             }
 
-            else if (TextUtils.isEmpty((newName)) || TextUtils.isEmpty((newAddress))) {
+            else if (TextUtils.isEmpty((newName)) || TextUtils.isEmpty((newAddress)) || isActive == !truckActiveStatus) {
                 // update only the address; name remains unchanged
                 if (TextUtils.isEmpty((newName)) && !TextUtils.isEmpty((newAddress))) {
-                    updateTruck(truckId, truckName, newAddress)
+                    updateTruck(truckId, truckName, newAddress, isActive)
                     Toast.makeText(this, "Truck address updated", Toast.LENGTH_LONG).show()
                     alertWindow.dismiss()
                 }
 
                 // update only name; address remains unchanged
                 else if (!TextUtils.isEmpty((newName)) && TextUtils.isEmpty((newAddress))) {
-                    updateTruck(truckId, newName, truckAddress)
+                    updateTruck(truckId, newName, truckAddress, isActive)
                     Toast.makeText(this, "Truck name updated", Toast.LENGTH_LONG).show()
                     alertWindow.dismiss()
                 }
 
-                else if (TextUtils.isEmpty(newName) && TextUtils.isEmpty(newAddress)) {
-                    Toast.makeText(this, "Please enter a new name or address", Toast.LENGTH_LONG).show()
+                // update only active status of truck
+                else {
+                    updateTruck(truckId, truckName, truckAddress, isActive)
+                    Toast.makeText(this, "Truck status updated", Toast.LENGTH_LONG).show()
                 }
             }
         })
@@ -104,6 +105,7 @@ class VendorTruckActivity : AppCompatActivity() {
         updateView.deleteTruckButton.setOnClickListener(View.OnClickListener {
             truckDao.deleteTruckById(truckId)
             Toast.makeText(this, "Truck deleted from database", Toast.LENGTH_LONG).show()
+            finish()
             alertWindow.dismiss()
         })
     }
@@ -135,9 +137,17 @@ class VendorTruckActivity : AppCompatActivity() {
             }
 
             else {
-                // todo: change createDate and updateDate
                 val food = Food(UUID.randomUUID().toString(), this.intent.getStringExtra("truckId"),
                     name, price.toDouble(), description, Calendar.getInstance().time, Calendar.getInstance().time)
+
+                if (foodIdList[0] == "") {
+                    foodIdList[0] = food.id
+                } else {
+                    foodIdList.add(food.id)
+                }
+
+                // add food id to truck
+                ref.child("trucks").child(this.intent.getStringExtra("truckId")).child("foodIdList").setValue(foodIdList)
 
                 foodDao.createFood(food)
                 foodList.add(food)
@@ -151,9 +161,9 @@ class VendorTruckActivity : AppCompatActivity() {
         })
     }
 
-    private fun updateTruck(truckId: String, newName: String, newAddress: String) {
-        // TODO: change food list and vendor id
-        val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList, "TEMP")
+    private fun updateTruck(truckId: String, newName: String, newAddress: String, isActive : Boolean) {
+        // TODO: change food list
+        val newTruck = Truck(truckId, newName, newAddress, foodIdList, intent.getStringExtra("vendorId"), isActive)
         truckDao.updateTruckById(truckId, newTruck)
     }
 

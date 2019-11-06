@@ -11,6 +11,7 @@ import kotlin.collections.HashMap
 class FoodDao(private val databaseRef: DatabaseReference) {
 
     private val TAG = "FoodDao"
+    private val foodList = ArrayList<Food>()
 
     public fun constructFoodByHashMap(dataSnapshot: DataSnapshot): Food {
         val id = dataSnapshot.child("id").value as String
@@ -26,6 +27,7 @@ class FoodDao(private val databaseRef: DatabaseReference) {
     fun createFood(food: Food) {
         databaseRef.child("foods").child(food.id).setValue(food)
         Log.d(TAG, food.name)
+        foodList.add(food)
     }
 
     fun updateFoodById(id: String, food: Food) {
@@ -37,6 +39,13 @@ class FoodDao(private val databaseRef: DatabaseReference) {
                 if (result != null) {
                     databaseRef.child("foods").child(id).setValue(food)
                     Log.d(TAG, "food updated")
+
+                    // update food in food list
+                    for (i in 0..foodList.count()) {
+                        if (foodList[i].id == id) {
+                            foodList[i] = food
+                        }
+                    }
                 }
             }
 
@@ -53,6 +62,13 @@ class FoodDao(private val databaseRef: DatabaseReference) {
                 val result = dataSnapshot.value
                 if (result != null) {
                     databaseRef.child("foods").child(id).removeValue()
+
+                    // delete food in food list
+                    for (i in 0..foodList.count()) {
+                        if (foodList[i].id == id) {
+                            foodList.removeAt(i)
+                        }
+                    }
                 }
             }
 
