@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.layout_update_delete_truck.view.*
 import java.util.*
 import kotlin.collections.HashMap
 import com.google.firebase.database.DatabaseReference
+import com.osueat.hungry.services.gms.UserLocation
 import kotlinx.android.synthetic.main.activity_vendor_truck.view.*
 import kotlinx.android.synthetic.main.layout_add_food_to_truck.view.*
 import kotlinx.android.synthetic.main.layout_update_delete_truck.view.nameEditText
@@ -163,7 +164,9 @@ class VendorTruckActivity : AppCompatActivity() {
 
     private fun updateTruck(truckId: String, newName: String, newAddress: String, isActive : Boolean) {
         // TODO: change food list
-        val newTruck = Truck(truckId, newName, newAddress, foodIdList, intent.getStringExtra("vendorId"), isActive)
+        val truckLocation = UserLocation.getLocation()
+        val newTruck = Truck(truckId, newName, newAddress, foodIdList, intent.getStringExtra("vendorId"),
+            isActive, truckLocation.latitude, truckLocation.longitude)
         truckDao.updateTruckById(truckId, newTruck)
     }
 

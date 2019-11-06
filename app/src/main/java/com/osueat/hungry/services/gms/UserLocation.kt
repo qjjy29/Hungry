@@ -2,16 +2,20 @@ package com.osueat.hungry.services.gms
 
 import android.app.Activity
 import android.location.Location
+import android.util.Log
 
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.location.FusedLocationProviderClient
 
 object UserLocation {
+    private val TAG = "UserLocation"
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var currentLocation = LatLng(0.0, 0.0)
 
     fun getLocation(): LatLng {
+        Log.i(TAG, "got user location ${currentLocation.latitude} ${currentLocation.longitude}")
         return currentLocation
     }
 
@@ -21,6 +25,7 @@ object UserLocation {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location : Location? ->
                 currentLocation = LatLng(location?.latitude!!, location?.longitude!!)
+                Log.d(TAG, "user location updated! ${location.latitude} ${location.longitude}")
             }
     }
 }

@@ -4,6 +4,8 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -65,7 +67,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mMap.addMarker(MarkerOptions().position(targetTruck).title(targetName))
 
         //Execute Directions API request
+        UserLocation.updateLocation(this)
         val userLocation = UserLocation.getLocation()
+
         GetPathFromLocation(serverApiKey, userLocation, targetTruck, object : DirectionPointListener {
             override fun onPath(polyLine: PolylineOptions) {
                 mMap.addPolyline(polyLine)
@@ -75,6 +79,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(targetTruck))
         val truckLocation = CameraUpdateFactory.newLatLngZoom(targetTruck, 15.0f)
         mMap.animateCamera(truckLocation)
+
         mMap.isMyLocationEnabled = true
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.uiSettings.isZoomGesturesEnabled = true

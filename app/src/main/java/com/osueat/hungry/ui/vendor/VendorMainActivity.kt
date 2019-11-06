@@ -19,6 +19,7 @@ import com.osueat.hungry.R
 import com.osueat.hungry.model.Truck
 import com.osueat.hungry.model.TruckDao
 import com.osueat.hungry.model.TruckListAdapter
+import com.osueat.hungry.services.gms.UserLocation
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -51,6 +52,9 @@ class VendorMainActivity : AppCompatActivity() {
             intent.putExtra("vendorId", this.intent.getStringExtra("vendorId"))
             startActivity(intent)
         })
+
+        // update user location
+        UserLocation.updateLocation(this)
 
         Log.d(TAG, "onCreate() called")
     }

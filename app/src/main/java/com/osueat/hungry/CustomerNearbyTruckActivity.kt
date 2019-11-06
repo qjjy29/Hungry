@@ -33,6 +33,9 @@ class CustomerNearbyTruckActivity : AppCompatActivity() {
             intent.putExtra("foodIdList", t.foodIdList)
             intent.putExtra("truckId", t.id)
             intent.putExtra("truckName", t.name)
+            intent.putExtra("truckLatitude", t.latitude)
+            intent.putExtra("truckLongitude", t.longitude)
+
             startActivity(intent)
         })
     }

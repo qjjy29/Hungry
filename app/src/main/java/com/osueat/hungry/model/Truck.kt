@@ -8,5 +8,7 @@ data class Truck (
     val address : String,
     val foodIdList: ArrayList<String>,
     val vendorId : String,
-    val isActive : Boolean
+    val isActive : Boolean,
+    val latitude : Double,
+    val longitude: Double
 )

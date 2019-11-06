@@ -16,7 +16,9 @@ class TruckDao(private val databaseRef: DatabaseReference) {
         val foodIdList = dataSnapshot.child("foodIdList").value as ArrayList<String>
         val vendorId = dataSnapshot.child("vendorId").value  as String
         val isActive = dataSnapshot.child("active").getValue(Boolean::class.java)
-        return Truck(id, name, address, foodIdList, vendorId, isActive!!)
+        val latitude = dataSnapshot.child("latitude").getValue(Double::class.java)
+        val longitude = dataSnapshot.child("longitude").getValue(Double::class.java)
+        return Truck(id, name, address, foodIdList, vendorId, isActive!!, latitude!!, longitude!!)
     }
 
     fun createTruck(truck: Truck) {
