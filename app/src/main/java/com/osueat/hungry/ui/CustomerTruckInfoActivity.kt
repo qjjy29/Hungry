@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ListView
+import android.widget.TextView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -40,7 +41,9 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
             newIntent.putExtras(b) //Put your id to your next Intent
             startActivity(newIntent)
         }
-        //var truckNameText: ViewText = findViewById(R.id.truckNameText)
+        var truckNameText = findViewById<TextView>(R.id.truckNameText)
+        truckNameText.text = intent.getStringExtra("truckName")
+
     }
 
     public override fun onStart() {
