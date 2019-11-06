@@ -81,6 +81,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        var nearbyTruckButton: Button = findViewById(R.id.nearby_truck_button)
+        nearbyTruckButton.setOnClickListener {
+            var intent = Intent(this, CustomerNearbyTruckActivity::class.java)
+            startActivity(intent)
+        }
+
         Log.d(TAG, "onCreate() called")
 
         // grant permissions

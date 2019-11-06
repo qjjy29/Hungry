@@ -88,3 +88,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:+'
     implementation 'androidx.appcompat:appcompat:+'
 }
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:+'
+    implementation 'androidx.constraintlayout:constraintlayout:+'
+}
