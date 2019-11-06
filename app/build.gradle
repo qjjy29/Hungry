@@ -77,3 +77,14 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:+'
     implementation 'androidx.constraintlayout:constraintlayout:+'
 }
+
+dependencies {
+    //noinspection GradleCompatible
+    implementation "com.android.support:support-compat:28.0.0"
+}
+
+dependencies {
+    implementation 'com.google.android.gms:play-services-maps:+'
+    implementation 'com.google.android.gms:play-services-location:+'
+    implementation 'androidx.appcompat:appcompat:+'
+}

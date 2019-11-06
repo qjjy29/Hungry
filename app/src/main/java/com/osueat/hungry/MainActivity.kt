@@ -1,11 +1,19 @@
 package com.osueat.hungry
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.solver.widgets.ChainHead
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -15,12 +23,36 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.model.*
+import com.osueat.hungry.notification.NotificationHandler
 import java.util.*
 import kotlin.collections.HashMap
+import android.content.pm.PackageManager
+import android.Manifest.permission
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import com.osueat.hungry.services.gms.UserLocation
+
 
 class MainActivity : AppCompatActivity() {
 
     private val TAG = "MainActivity"
+
+    private val INITIAL_PERMS =
+        arrayOf(ACCESS_FINE_LOCATION)
+
+    private val INITIAL_REQUEST = 1337
+
+    private fun hasPermission(perm: String): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PackageManager.PERMISSION_GRANTED == checkSelfPermission(perm)
+        } else {
+            TODO("VERSION.SDK_INT < M")
+            true
+        }
+    }
+
+    private fun canAccessLocation(): Boolean {
+        return hasPermission(ACCESS_FINE_LOCATION)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,11 +72,26 @@ class MainActivity : AppCompatActivity() {
 
         var button: Button = findViewById(R.id.button)
         button.setOnClickListener {
-            var intent = Intent(this, TruckActivity::class.java)
+            var intent = Intent(this, MapsActivity::class.java)
+            val b = Bundle()
+            b.putDouble("lat", 40.002) //latitude of the truck
+            b.putDouble("lng", -83.018) //longitude of the truck
+            b.putString("name", "All you can eat truck")
+            intent.putExtras(b) //Put your id to your next Intent
             startActivity(intent)
         }
 
         Log.d(TAG, "onCreate() called")
+
+        // grant permissions
+        if (!canAccessLocation()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(INITIAL_PERMS, INITIAL_REQUEST)
+            }
+        }
+
+        // update user location
+        UserLocation.updateLocation(this)
 
         // test orderedfood
         val orderedFood1 = OrderedFood("1", 1)
@@ -82,6 +129,32 @@ class MainActivity : AppCompatActivity() {
                 println("The read failed: " + databaseError.code)
             }
         })
+
+        // test codes for notification
+        val notificationHandler = NotificationHandler(this)
+        notificationHandler.createNotificationChannel()
+        val textTitle = "Order Prepared"
+        val textContent = "Your order is prepared. Enjoy your food soon!"
+        var builder = NotificationCompat.Builder(this, "1")
+            .setSmallIcon(R.drawable.cat_background)
+            .setContentTitle(textTitle)
+            .setContentText(textContent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        val textTitle2 = "Order Cancelled"
+        val textContent2 = "Your order has been cancelled successfully."
+        var builder2 = NotificationCompat.Builder(this, "1")
+            .setSmallIcon(R.drawable.cat_background)
+            .setContentTitle(textTitle2)
+            .setContentText(textContent2)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        with(NotificationManagerCompat.from(this)) {
+            // notificationId is a unique int for each notification that you must define
+            notify((Date().time % 86400).toInt() , builder.build())
+        }
+        with(NotificationManagerCompat.from(this)) {
+            // notificationId is a unique int for each notification that you must define
+            notify((Date().time % 86400).toInt(), builder2.build())
+        }
     }
 
     public override fun onStart() {
