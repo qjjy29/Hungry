@@ -48,4 +48,19 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/truckMenuText"></ListView>
 
+    <TextView
+        android:id="@+id/truckReviewText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/menuListView"
+        android:text="Reviews"
+        android:textAlignment="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
+    <ListView
+        android:id="@+id/truckReviewListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/truckReviewText"></ListView>
+
 </RelativeLayout>

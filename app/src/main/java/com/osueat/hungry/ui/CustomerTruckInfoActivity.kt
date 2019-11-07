@@ -21,14 +21,18 @@ import com.osueat.hungry.model.*
 import kotlinx.android.synthetic.main.layout_add_review.view.*
 import java.util.*
 
+
+
 class CustomerTruckInfoActivity : AppCompatActivity() {
 
     private val TAG = "TruckInfoActivity"
 
     private val foodList = ArrayList<Food>()
+    private val reviewList = ArrayList<Review>()
     private val ref = FirebaseDatabase.getInstance().reference
     private val foodDao = FoodDao(ref)
     private val reviewDao = ReviewDao(ref)
+
 
     private fun addReviewWindow(truckName: String) {
         // add reviews
@@ -91,6 +95,8 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
         super.onStart()
         Log.d(TAG, "onStart() called")
 
+        val truckId = intent.getStringExtra("truckId").toString()
+
         // menu listener
         ref.child("foods").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -106,6 +112,27 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
 
                 val foodListAdapter = FoodListAdapter(this@CustomerTruckInfoActivity, foodList)
                 findViewById<ListView>(R.id.menuListView).adapter = foodListAdapter
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                TODO("not implemented")
+            }
+        })
+
+        // review listener
+        ref.child("reviews").orderByChild("truckId").equalTo(truckId)
+            .addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                reviewList.clear()
+
+                for (dataSnapshotChild in dataSnapshot.children) {
+                    val review = reviewDao.constructReviewByHashMap(dataSnapshotChild)
+
+                    reviewList.add(review)
+                }
+
+                val reviewListAdapter = ReviewListAdapter(this@CustomerTruckInfoActivity, reviewList)
+                findViewById<ListView>(R.id.truckReviewListView).adapter = reviewListAdapter
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

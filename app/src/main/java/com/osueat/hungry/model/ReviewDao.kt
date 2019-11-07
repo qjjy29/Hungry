@@ -18,9 +18,9 @@ class ReviewDao(private val databaseRef: DatabaseReference) {
         val truckId = dataSnapshot.child("truckId").value as String
         val customerNickname = dataSnapshot.child("customerNickname").value as String
         val content = dataSnapshot.child("content").value as String
-        val star = dataSnapshot.child("star").value as Int
+        val star = dataSnapshot.child("star").getValue(Int::class.java)
         val createDate = dataSnapshot.child("createDate").getValue(Date::class.java)
-        return Review(id, customerId, truckId, customerNickname, content, star, createDate!!)
+        return Review(id, customerId, truckId, customerNickname, content, star!!, createDate!!)
     }
 
     fun createReview(review: Review) {
