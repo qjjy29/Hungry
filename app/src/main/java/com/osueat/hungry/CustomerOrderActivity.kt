@@ -8,10 +8,6 @@ import android.util.Log
 import android.view.View
 import android.widget.ListView
 import android.widget.Toast
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.model.*
 import kotlinx.android.synthetic.main.activity_customer_order.*
 import kotlinx.android.synthetic.main.activity_vendor_add_truck.*
@@ -20,6 +16,8 @@ import android.widget.CheckBox
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AlertDialog
+import com.google.firebase.database.*
+import com.osueat.hungry.notification.NotificationSender
 import kotlinx.android.synthetic.main.layout_add_food_to_order.view.*
 
 
@@ -27,7 +25,7 @@ class CustomerOrderActivity : AppCompatActivity() {
 
     private val TAG = "CustomerOrderActivity"
     private val ref = FirebaseDatabase.getInstance().reference
-    val orderDao = OrderDao(ref)
+    private val orderDao = OrderDao(ref)
     private val foodList = ArrayList<Food>()
     private val foodDao = FoodDao(ref)
 
@@ -57,6 +55,40 @@ class CustomerOrderActivity : AppCompatActivity() {
                 orderDao.createOrder(order)
 
                 Toast.makeText(this, "Order placed successfully", Toast.LENGTH_LONG).show()
+                // create a listener for this order
+                val notificationSender = NotificationSender(this)
+
+                ref.child("orders").child(order.id).
+                    addChildEventListener(object: ChildEventListener {
+                        override fun onChildRemoved(p0: DataSnapshot) {
+
+                        }
+
+                        override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+
+                        }
+
+                        override fun onChildChanged(dataSnapshot: DataSnapshot, prevChildKey: String?) {
+                            val status = dataSnapshot.value.toString()
+                            Log.d(TAG, status)
+                            if (status == "READY") {
+                                notificationSender.sendNotification(notificationSender.ORDER_READY_TITLE,
+                                    notificationSender.ORDER_READY_CONTENT)
+                            }
+                        }
+
+                        override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+
+                        }
+
+                        override fun onCancelled(p0: DatabaseError) {
+
+                        }
+
+
+
+                    })
+
                 //after making an order, clear the current order list
                 currentOrderList.clear()
             }

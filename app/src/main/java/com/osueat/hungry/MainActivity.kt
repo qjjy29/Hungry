@@ -114,48 +114,6 @@ class MainActivity : AppCompatActivity() {
         // update user location
         UserLocation.updateLocation(this)
 
-        // test orderedfood
-        val orderedFood1 = OrderedFood("1", 1)
-        val orderedFood2 = OrderedFood("2", 1)
-        val orderedFoodList = listOf(orderedFood1, orderedFood2)
-        val id = "13"
-        val customerId = "15"
-        val vendorId = "18"
-        val truckId = "213"
-        val status = "Pending"
-        val price = 6.0
-        val createDate = Date()
-        val lastUpdateDate = Date()
-        val order = Order(
-            id, customerId, vendorId, truckId, orderedFoodList,
-            status, price, createDate, lastUpdateDate
-        )
-
-        val orderDao = OrderDao(ref)
-        orderDao.createOrder(order)
-
-
-        ref.child("orders").child(id).addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val result = dataSnapshot.value
-                Log.d(TAG, result.toString())
-                if (result != null) {
-                    val order = orderDao.constructOrderByHashMap(dataSnapshot)
-                    Log.d(TAG, order.toString())
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("The read failed: " + databaseError.code)
-            }
-        })
-
-        // test codes for notification
-        val notificationSender = NotificationSender(this)
-        notificationSender.sendNotification("Order Prepared", "Your order is prepared. Enjoy your food soon!")
-        notificationSender.sendNotification("Order Cancelled", "Your order has been cancelled successfully.")
-
 
     }
 

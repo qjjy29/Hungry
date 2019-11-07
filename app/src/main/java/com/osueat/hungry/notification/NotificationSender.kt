@@ -10,6 +10,11 @@ class NotificationSender(activity: Activity) {
 
     private val activity = activity
 
+    val ORDER_IN_PROGRESS_TITLE = "Your order is in progress now"
+    val ORDER_IN_PROGRESS_CONTENT = "Delicious food is coming soon!"
+    val ORDER_READY_TITLE = "Your order is ready now"
+    val ORDER_READY_CONTENT = "Enjoy your meal and have a good day!"
+
     fun sendNotification(title: String, content: String) {
         val notificationHandler = NotificationHandler(activity)
         notificationHandler.createNotificationChannel()
