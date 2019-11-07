@@ -1,20 +1,23 @@
 package com.osueat.hungry.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
+import android.view.View
 import android.widget.ListView
+import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.R
-import com.osueat.hungry.model.Food
-import com.osueat.hungry.model.FoodDao
-import com.osueat.hungry.model.FoodListAdapter
-import com.osueat.hungry.model.TruckDao
+import com.osueat.hungry.model.*
+import kotlinx.android.synthetic.main.activity_customer_truck_info.*
+import kotlinx.android.synthetic.main.activity_vendor_add_truck.*
 import kotlinx.android.synthetic.main.activity_vendor_truck.*
-import java.util.ArrayList
+import java.util.*
 
 class CustomerTruckInfoActivity : AppCompatActivity() {
 
@@ -29,6 +32,10 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_customer_truck_info)
 
         //var truckNameText: ViewText = findViewById(R.id.truckNameText)
+
+        createOrderButton.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, C::class.java)
+        })
     }
 
     public override fun onStart() {
