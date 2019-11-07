@@ -29,10 +29,14 @@ import kotlin.collections.HashMap
 import android.content.pm.PackageManager
 import android.Manifest.permission
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import com.osueat.hungry.data.model.CurrentCustomer
+import com.osueat.hungry.data.model.CurrentUser
 import com.osueat.hungry.services.gms.UserLocation
 
 
 class MainActivity : AppCompatActivity() {
+
+    private val ref = FirebaseDatabase.getInstance().reference
 
     private val TAG = "MainActivity"
 
@@ -69,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
 
         var button: Button = findViewById(R.id.button)
         button.setOnClickListener {
@@ -116,7 +121,7 @@ class MainActivity : AppCompatActivity() {
             id, customerId, vendorId, truckId, orderedFoodList,
             status, price, createDate, lastUpdateDate
         )
-        val ref = FirebaseDatabase.getInstance().reference
+
         val orderDao = OrderDao(ref)
         orderDao.createOrder(order)
 
