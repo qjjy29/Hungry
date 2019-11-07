@@ -61,7 +61,7 @@ class RegisterActivity : AppCompatActivity() {
                 if (vendorCheckBox.isChecked) {
                     val vendorId = UUID.randomUUID().toString()
                     val nickname = "Great vendor"
-                    val balance = 5.0
+                    val balance = 0.0
                     val truckIdList = emptyList<String>()
                     val vendor = Vendor(vendorId, id, nickname, truckIdList, balance)
                     val vendorDao = VendorDao(ref)
@@ -69,7 +69,7 @@ class RegisterActivity : AppCompatActivity() {
                 } else {
                     val customerId = UUID.randomUUID().toString()
                     val nickname = "Great customer"
-                    val balance = 0.0
+                    val balance = 1000.0
                     val customer = Customer(customerId, id, nickname, balance)
                     val customerDao = CustomerDao(ref)
                     customerDao.createCustomer(customer)
