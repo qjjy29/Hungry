@@ -1,4 +1,4 @@
-package com.osueat.hungry.ui
+package com.osueat.hungry
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +34,9 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
         //var truckNameText: ViewText = findViewById(R.id.truckNameText)
 
         createOrderButton.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, C::class.java)
+            val orderIntent = Intent(this, CustomerOrderActivity::class.java)
+            orderIntent.putExtra("truckId", intent.getStringExtra("truckId"))
+            startActivity(orderIntent)
         })
     }
 
