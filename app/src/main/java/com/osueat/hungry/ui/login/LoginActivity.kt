@@ -60,6 +60,7 @@ class LoginActivity : AppCompatActivity() {
                         // check if user is customer
                         if (currentUser.type == "CUSTOMER") {
                             val intent = Intent(it, MainActivity::class.java)
+                            intent.putExtra("customerId", currentUser.id)
                             startActivity(intent)
                         }
                         // else user is vendor

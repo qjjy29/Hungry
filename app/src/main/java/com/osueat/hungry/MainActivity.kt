@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         var nearbyTruckButton: Button = findViewById(R.id.nearby_truck_button)
         nearbyTruckButton.setOnClickListener {
             var intent = Intent(this, CustomerNearbyTruckActivity::class.java)
+            intent.putExtra("customerId", this.intent.getStringExtra("customerId"))
             startActivity(intent)
         }
 

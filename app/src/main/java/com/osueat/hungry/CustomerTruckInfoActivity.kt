@@ -36,6 +36,8 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
         createOrderButton.setOnClickListener(View.OnClickListener {
             val orderIntent = Intent(this, CustomerOrderActivity::class.java)
             orderIntent.putExtra("truckId", intent.getStringExtra("truckId"))
+            orderIntent.putExtra("vendorId", this.intent.getStringExtra("vendorId"))
+            orderIntent.putExtra("customerId", this.intent.getStringExtra("customerId"))
             startActivity(orderIntent)
         })
     }
