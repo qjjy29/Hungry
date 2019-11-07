@@ -29,6 +29,9 @@
     <string name="description">Description</string>
     <string name="cancel">Cancel</string>
     <string name="is_active">Is Active</string>
+    <string name="create_order">Create Order</string>
+    <string name="place_order">Place Order</string>
+    <string name="add_to_order">Add To Order</string>
     <string name="view_map">View Map</string>
     <string name="star">Star</string>
     <string name="content">Content</string>
