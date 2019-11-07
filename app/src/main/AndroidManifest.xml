@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/cat"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CustomerOrderActivity"></activity>
+        <activity android:name=".CustomerOrderHistoryActivity"></activity>
+        <activity android:name=".CustomerOrderActivity" />
         <activity android:name=".CustomerTruckInfoActivity" />
         <activity android:name=".CustomerNearbyTruckActivity" />
         <!--
