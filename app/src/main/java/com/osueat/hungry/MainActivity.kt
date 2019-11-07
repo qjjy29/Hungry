@@ -31,6 +31,7 @@ import android.Manifest.permission
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import com.osueat.hungry.data.model.CurrentCustomer
 import com.osueat.hungry.data.model.CurrentUser
+import com.osueat.hungry.notification.NotificationSender
 import com.osueat.hungry.services.gms.UserLocation
 
 
@@ -142,30 +143,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         // test codes for notification
-        val notificationHandler = NotificationHandler(this)
-        notificationHandler.createNotificationChannel()
-        val textTitle = "Order Prepared"
-        val textContent = "Your order is prepared. Enjoy your food soon!"
-        var builder = NotificationCompat.Builder(this, "1")
-            .setSmallIcon(R.drawable.cat_background)
-            .setContentTitle(textTitle)
-            .setContentText(textContent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        val textTitle2 = "Order Cancelled"
-        val textContent2 = "Your order has been cancelled successfully."
-        var builder2 = NotificationCompat.Builder(this, "1")
-            .setSmallIcon(R.drawable.cat_background)
-            .setContentTitle(textTitle2)
-            .setContentText(textContent2)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        with(NotificationManagerCompat.from(this)) {
-            // notificationId is a unique int for each notification that you must define
-            notify((Date().time % 86400).toInt() , builder.build())
-        }
-        with(NotificationManagerCompat.from(this)) {
-            // notificationId is a unique int for each notification that you must define
-            notify((Date().time % 86400).toInt(), builder2.build())
-        }
+        val notificationSender = NotificationSender(this)
+        notificationSender.sendNotification("Order Prepared", "Your order is prepared. Enjoy your food soon!")
+        notificationSender.sendNotification("Order Cancelled", "Your order has been cancelled successfully.")
+
+
     }
 
     public override fun onStart() {

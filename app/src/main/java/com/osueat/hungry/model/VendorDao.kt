@@ -13,7 +13,10 @@ class VendorDao(private val databaseRef: DatabaseReference) {
         val id = dataSnapshot.child("id").value as String
         val userId = dataSnapshot.child("userId").value as String
         val nickname = dataSnapshot.child("nickname").value as String
-        val truckIdList = dataSnapshot.child("truckIdList").value as List<String>
+        var truckIdList = emptyList<String>()
+        if (dataSnapshot.child("truckIdList").value != null) {
+            truckIdList = dataSnapshot.child("truckIdList").value as List<String>
+        }
         val balance = dataSnapshot.child("balance").getValue(Double::class.java)
         return Vendor(id, userId, nickname, truckIdList, balance!!)
     }
