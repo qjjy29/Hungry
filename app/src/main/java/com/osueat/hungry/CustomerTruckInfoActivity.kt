@@ -1,17 +1,25 @@
-package com.osueat.hungry.ui
+package com.osueat.hungry
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.MapsActivity
 import com.osueat.hungry.R
+import com.osueat.hungry.model.*
+import kotlinx.android.synthetic.main.activity_customer_truck_info.*
+import kotlinx.android.synthetic.main.activity_vendor_add_truck.*
+import kotlinx.android.synthetic.main.activity_vendor_truck.*
+import java.util.*
 import com.osueat.hungry.model.Food
 import com.osueat.hungry.model.FoodDao
 import com.osueat.hungry.model.FoodListAdapter
@@ -41,6 +49,14 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
             startActivity(newIntent)
         }
         //var truckNameText: ViewText = findViewById(R.id.truckNameText)
+
+        createOrderButton.setOnClickListener(View.OnClickListener {
+            val orderIntent = Intent(this, CustomerOrderActivity::class.java)
+            orderIntent.putExtra("truckId", intent.getStringExtra("truckId"))
+            orderIntent.putExtra("vendorId", this.intent.getStringExtra("vendorId"))
+            orderIntent.putExtra("customerId", this.intent.getStringExtra("customerId"))
+            startActivity(orderIntent)
+        })
     }
 
     public override fun onStart() {
