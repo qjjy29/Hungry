@@ -6,18 +6,25 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.osueat.hungry.MapsActivity
 import com.osueat.hungry.R
 import com.osueat.hungry.model.*
 import kotlinx.android.synthetic.main.activity_customer_truck_info.*
 import kotlinx.android.synthetic.main.activity_vendor_add_truck.*
 import kotlinx.android.synthetic.main.activity_vendor_truck.*
 import java.util.*
+import com.osueat.hungry.model.Food
+import com.osueat.hungry.model.FoodDao
+import com.osueat.hungry.model.FoodListAdapter
+
+import java.util.ArrayList
 
 class CustomerTruckInfoActivity : AppCompatActivity() {
 
@@ -30,7 +37,17 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_customer_truck_info)
+        val viewMapButton = findViewById<Button>(R.id.viewMapButton)
+        viewMapButton.setOnClickListener {
+            var newIntent = Intent(this, MapsActivity::class.java)
+            val b = Bundle()
+            b.putDouble("lat", intent.getDoubleExtra("truckLatitude", 0.0)) //latitude of the truck
+            b.putDouble("lng", intent.getDoubleExtra("truckLongitude", 0.0)) //longitude of the truck
+            b.putString("name", intent.getStringExtra("truckName"))
 
+            newIntent.putExtras(b) //Put your id to your next Intent
+            startActivity(newIntent)
+        }
         //var truckNameText: ViewText = findViewById(R.id.truckNameText)
 
         createOrderButton.setOnClickListener(View.OnClickListener {

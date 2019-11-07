@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.app.AlertDialog
 import android.widget.*
 import com.osueat.hungry.model.*
+import com.osueat.hungry.services.gms.UserLocation
 import kotlinx.android.synthetic.main.activity_vendor_add_truck.addressEditText
 import kotlinx.android.synthetic.main.activity_vendor_add_truck.nameEditText
 import kotlinx.android.synthetic.main.layout_update_delete_truck.*
@@ -53,7 +54,10 @@ class VendorAddTruckActivity : AppCompatActivity() {
             // if truck name/address is provided, add to database
             if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(address)) {
                 // TODO: change food list and vendor id
-                val truck = Truck(UUID.randomUUID().toString(), name.toString(), address.toString(), tempFoodIdList, this.intent.getStringExtra("vendorId"), false)
+                val truckLocation = UserLocation.getLocation()
+                val truck = Truck(UUID.randomUUID().toString(), name.toString(), address.toString(),
+                    tempFoodIdList, this.intent.getStringExtra("vendorId"), false,
+                    truckLocation.latitude, truckLocation.longitude)
 
                 truckDao.createTruck(truck)
                 truckList.add(truck)
@@ -133,7 +137,10 @@ class VendorAddTruckActivity : AppCompatActivity() {
 
     private fun updateTruck(truckId: String, newName: String, newAddress: String, isActive : Boolean) {
         // TODO: change food list and vendor id
-        val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList,  this.intent.getStringExtra("vendorId"), isActive)
+        val truckLocation = UserLocation.getLocation()
+        val newTruck = Truck(truckId, newName, newAddress, tempFoodIdList,
+            this.intent.getStringExtra("vendorId"), isActive,
+            truckLocation.latitude, truckLocation.longitude)
         truckDao.updateTruckById(truckId, newTruck)
     }
 

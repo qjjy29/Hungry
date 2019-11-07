@@ -114,7 +114,7 @@ class CustomerOrderActivity : AppCompatActivity() {
             currentOrderList.add(orderedFood)
             foodInOrderList.add(food)
 
-            Toast.makeText(this, "Food added to order", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Food added to order", Toast.LENGTH_SHORT).show()
             alertWindow.dismiss()
         })
 
