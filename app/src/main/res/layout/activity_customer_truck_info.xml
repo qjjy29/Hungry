@@ -25,6 +25,14 @@
         android:layout_below="@id/truckNameText"
         android:text="@string/view_map" />
 
+    <Button
+        android:id="@+id/addReviewButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/truckNameText"
+        android:layout_toRightOf="@id/viewMapButton"
+        android:text="add review" />
+
     <TextView
         android:id="@+id/truckMenuText"
         android:layout_width="match_parent"

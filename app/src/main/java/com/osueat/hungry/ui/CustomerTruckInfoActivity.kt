@@ -1,23 +1,25 @@
 package com.osueat.hungry.ui
 
+import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.osueat.hungry.MapsActivity
 import com.osueat.hungry.R
-import com.osueat.hungry.model.Food
-import com.osueat.hungry.model.FoodDao
-import com.osueat.hungry.model.FoodListAdapter
-
-import java.util.ArrayList
+import com.osueat.hungry.data.model.CurrentCustomer
+import com.osueat.hungry.model.*
+import kotlinx.android.synthetic.main.layout_add_review.view.*
+import java.util.*
 
 class CustomerTruckInfoActivity : AppCompatActivity() {
 
@@ -26,6 +28,40 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
     private val foodList = ArrayList<Food>()
     private val ref = FirebaseDatabase.getInstance().reference
     private val foodDao = FoodDao(ref)
+    private val reviewDao = ReviewDao(ref)
+
+    private fun addReviewWindow(truckName: String) {
+        // add reviews
+        val addReviewAlertDialog = AlertDialog.Builder(this@CustomerTruckInfoActivity)
+        val addReviewView = layoutInflater.inflate(R.layout.layout_add_review, null)
+        addReviewAlertDialog.setView(addReviewView)
+        addReviewAlertDialog.setTitle(truckName)
+
+        // show add review window
+        val alertWindow = addReviewAlertDialog.create()
+        alertWindow.show()
+
+        addReviewView.addReviewButton.setOnClickListener {
+            // parameters
+            val customer = CurrentCustomer.getCustomer()!!
+            val id = UUID.randomUUID().toString()
+            val customerId = customer.id
+            val truckId = intent.getStringExtra("truckId")
+            val customerNickname = customer.nickname
+            val reviewContent = addReviewView.reviewEditText.text.toString()
+            val star = addReviewView.starEditText.text.toString().toInt()
+            val createDate = Date()
+            val newReview = Review(id, customerId, truckId, customerNickname,
+                reviewContent, star, createDate)
+            reviewDao.createReview(newReview)
+            Toast.makeText(applicationContext, "Thank you! Your review has been posted!", Toast.LENGTH_LONG).show()
+            alertWindow.dismiss()
+        }
+
+        addReviewView.cancelReviewButton.setOnClickListener(View.OnClickListener {
+            alertWindow.dismiss()
+        })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +79,11 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
         }
         var truckNameText = findViewById<TextView>(R.id.truckNameText)
         truckNameText.text = intent.getStringExtra("truckName")
+
+        val addReviewButton = findViewById<Button>(R.id.addReviewButton)
+        addReviewButton.setOnClickListener {
+            addReviewWindow(intent.getStringExtra("truckName"))
+        }
 
     }
 

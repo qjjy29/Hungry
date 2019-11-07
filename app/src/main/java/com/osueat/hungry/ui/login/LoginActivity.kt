@@ -22,6 +22,8 @@ import com.osueat.hungry.MainActivity
 
 import com.osueat.hungry.R
 import com.osueat.hungry.RegisterActivity
+import com.osueat.hungry.data.model.CurrentCustomer
+import com.osueat.hungry.data.model.CurrentUser
 import com.osueat.hungry.model.Customer
 import com.osueat.hungry.model.User
 import com.osueat.hungry.model.UserDao
@@ -40,6 +42,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var login: Button
     private lateinit var register: Button
 
+    private fun updateCurrentUser(user: User) {
+        CurrentUser.setCurrentUser(user)
+    }
 
     private fun auth(username: String, password: String, it: Context) {
         val ref = FirebaseDatabase.getInstance().reference
@@ -57,6 +62,7 @@ class LoginActivity : AppCompatActivity() {
                             currentUser.createDate, Date(), currentUser.lastUpdateDate,
                             currentUser.phoneNumber, currentUser.email, currentUser.type)
                         userDao.updateUserById(currentUser.id, updatedUser)
+                        updateCurrentUser(currentUser)
                         // check if user is customer
                         if (currentUser.type == "CUSTOMER") {
                             val intent = Intent(it, MainActivity::class.java)

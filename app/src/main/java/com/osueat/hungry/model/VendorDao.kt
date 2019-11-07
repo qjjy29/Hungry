@@ -9,7 +9,7 @@ import kotlin.collections.HashMap
 
 class VendorDao(private val databaseRef: DatabaseReference) {
 
-    private fun constructVendorByHashMap(dataSnapshot: DataSnapshot): Vendor {
+    fun constructVendorByHashMap(dataSnapshot: DataSnapshot): Vendor {
         val id = dataSnapshot.child("id").value as String
         val userId = dataSnapshot.child("userId").value as String
         val nickname = dataSnapshot.child("nickname").value as String
