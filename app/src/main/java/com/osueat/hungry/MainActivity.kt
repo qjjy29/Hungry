@@ -33,6 +33,8 @@ import com.osueat.hungry.data.model.CurrentCustomer
 import com.osueat.hungry.data.model.CurrentUser
 import com.osueat.hungry.notification.NotificationSender
 import com.osueat.hungry.services.gms.UserLocation
+import kotlinx.android.synthetic.main.activity_customer_order.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -78,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
         var button: Button = findViewById(R.id.button)
         button.setOnClickListener {
-            var intent = Intent(this, MapsActivity::class.java)
+            val intent = Intent(this, MapsActivity::class.java)
             val b = Bundle()
             b.putDouble("lat", 40.002) //latitude of the truck
             b.putDouble("lng", -83.018) //longitude of the truck
@@ -89,7 +91,14 @@ class MainActivity : AppCompatActivity() {
 
         var nearbyTruckButton: Button = findViewById(R.id.nearby_truck_button)
         nearbyTruckButton.setOnClickListener {
-            var intent = Intent(this, CustomerNearbyTruckActivity::class.java)
+            val intent = Intent(this, CustomerNearbyTruckActivity::class.java)
+            intent.putExtra("customerId", this.intent.getStringExtra("customerId"))
+            startActivity(intent)
+        }
+
+        ordersButton.setOnClickListener {
+            val intent = Intent(this, CustomerOrderHistoryActivity::class.java)
+            intent.putExtra("customerId", this.intent.getStringExtra("customerId"))
             startActivity(intent)
         }
 

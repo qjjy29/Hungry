@@ -17,8 +17,10 @@ class VendorDao(private val databaseRef: DatabaseReference) {
         if (dataSnapshot.child("truckIdList").value != null) {
             truckIdList = dataSnapshot.child("truckIdList").value as List<String>
         }
+        //val truckIdList = dataSnapshot.child("truckIdList").value as List<String>
         val balance = dataSnapshot.child("balance").getValue(Double::class.java)
-        return Vendor(id, userId, nickname, truckIdList, balance!!)
+        //return Vendor(id, userId, nickname, truckIdList, balance!!)
+        return Vendor(id, userId, nickname, balance!!)
     }
 
     fun createVendor(vendor: Vendor) {

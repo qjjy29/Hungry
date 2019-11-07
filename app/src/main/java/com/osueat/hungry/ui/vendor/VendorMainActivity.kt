@@ -44,6 +44,13 @@ class VendorMainActivity : AppCompatActivity() {
             startActivity(intent)
         })
 
+        viewOrdersButton.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, VendorUpdateOrdersActivity::class.java)
+            intent.putExtra("vendorId", this.intent.getStringExtra("vendorId"))
+            startActivity(intent)
+        })
+
+
         findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val t = truckList.get(i)
 

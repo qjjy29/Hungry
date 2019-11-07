@@ -63,7 +63,8 @@ class RegisterActivity : AppCompatActivity() {
                     val nickname = "Great vendor"
                     val balance = 0.0
                     val truckIdList = emptyList<String>()
-                    val vendor = Vendor(vendorId, id, nickname, truckIdList, balance)
+                    //val vendor = Vendor(vendorId, id, nickname, truckIdList, balance)
+                    val vendor = Vendor(vendorId, id, nickname, balance)
                     val vendorDao = VendorDao(ref)
                     vendorDao.createVendor(vendor)
                 } else {

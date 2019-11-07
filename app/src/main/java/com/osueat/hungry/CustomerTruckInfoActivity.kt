@@ -1,8 +1,6 @@
-package com.osueat.hungry.ui
+package com.osueat.hungry
 
-import android.app.AlertDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,17 +8,22 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.osueat.hungry.MapsActivity
-import com.osueat.hungry.R
 import com.osueat.hungry.data.model.CurrentCustomer
 import com.osueat.hungry.model.*
+import kotlinx.android.synthetic.main.activity_customer_truck_info.*
+import kotlinx.android.synthetic.main.activity_customer_truck_info.view.*
+import kotlinx.android.synthetic.main.activity_customer_truck_info.view.addReviewButton
+import kotlinx.android.synthetic.main.activity_customer_truck_info.view.createOrderButton
+import kotlinx.android.synthetic.main.activity_customer_truck_info.view.createOrderButton
 import kotlinx.android.synthetic.main.layout_add_review.view.*
 import java.util.*
-
+import kotlin.collections.ArrayList
 
 
 class CustomerTruckInfoActivity : AppCompatActivity() {
@@ -81,6 +84,15 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
             newIntent.putExtras(b) //Put your id to your next Intent
             startActivity(newIntent)
         }
+        //var truckNameText: ViewText = findViewById(R.id.truckNameText)
+
+        createOrderButton.setOnClickListener(View.OnClickListener {
+            val orderIntent = Intent(this, CustomerOrderActivity::class.java)
+            orderIntent.putExtra("truckId", intent.getStringExtra("truckId"))
+            orderIntent.putExtra("vendorId", this.intent.getStringExtra("vendorId"))
+            orderIntent.putExtra("customerId", this.intent.getStringExtra("customerId"))
+            startActivity(orderIntent)
+        })
         var truckNameText = findViewById<TextView>(R.id.truckNameText)
         truckNameText.text = intent.getStringExtra("truckName")
 
@@ -88,7 +100,6 @@ class CustomerTruckInfoActivity : AppCompatActivity() {
         addReviewButton.setOnClickListener {
             addReviewWindow(intent.getStringExtra("truckName"))
         }
-
     }
 
     public override fun onStart() {
