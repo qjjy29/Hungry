@@ -10,6 +10,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -22,14 +23,12 @@ import com.osueat.hungry.MainActivity
 
 import com.osueat.hungry.R
 import com.osueat.hungry.RegisterActivity
-import com.osueat.hungry.data.model.CurrentCustomer
 import com.osueat.hungry.data.model.CurrentUser
-import com.osueat.hungry.model.Customer
 import com.osueat.hungry.model.User
 import com.osueat.hungry.model.UserDao
 import com.osueat.hungry.ui.vendor.VendorMainActivity
+import java.nio.charset.StandardCharsets
 import java.util.*
-import kotlin.collections.HashMap
 
 class LoginActivity : AppCompatActivity() {
 
@@ -49,18 +48,28 @@ class LoginActivity : AppCompatActivity() {
     private fun auth(username: String, password: String, it: Context) {
         val ref = FirebaseDatabase.getInstance().reference
         val userDao = UserDao(ref)
+        val encryptedPassword = Base64.encodeToString(
+            password.toByteArray(StandardCharsets.UTF_8), Base64.DEFAULT)
         Log.d(TAG, "auth")
         ref.child("users").orderByChild("username").equalTo(username)
             .addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (dataSnapshotChild in dataSnapshot.children) {
                     val currentUser = userDao.constructUserByHashMap(dataSnapshotChild)
-                    if (currentUser.password == password) {
+                    val realPassword = Base64.encodeToString(
+                        currentUser.password.toByteArray(StandardCharsets.UTF_8), Base64.DEFAULT)
+                    if (currentUser.password == password || currentUser.password == encryptedPassword) {
                         // update the lastLoginDate
                         val userDao = UserDao(ref)
-                        val updatedUser = User(currentUser.id, currentUser.username, currentUser.password,
-                            currentUser.createDate, Date(), currentUser.lastUpdateDate,
-                            currentUser.phoneNumber, currentUser.email, currentUser.type)
+                        val updatedUser = if (currentUser.password == password) {
+                            User(currentUser.id, currentUser.username, realPassword,
+                                currentUser.createDate, Date(), currentUser.lastUpdateDate,
+                                currentUser.phoneNumber, currentUser.email, currentUser.type)
+                        } else {
+                            User(currentUser.id, currentUser.username, currentUser.password,
+                                currentUser.createDate, Date(), currentUser.lastUpdateDate,
+                                currentUser.phoneNumber, currentUser.email, currentUser.type)
+                        }
                         userDao.updateUserById(currentUser.id, updatedUser)
                         updateCurrentUser(currentUser)
                         // check if user is customer
