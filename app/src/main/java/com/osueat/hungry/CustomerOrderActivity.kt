@@ -71,9 +71,19 @@ class CustomerOrderActivity : AppCompatActivity() {
                         override fun onChildChanged(dataSnapshot: DataSnapshot, prevChildKey: String?) {
                             val status = dataSnapshot.value.toString()
                             Log.d(TAG, status)
-                            if (status == "READY") {
+                            if (status == "IN PROGRESS") {
+                                notificationSender.sendNotification(notificationSender.ORDER_IN_PROGRESS_TITLE,
+                                    notificationSender.ORDER_IN_PROGRESS_CONTENT)
+                            }
+
+                            if (status == "ORDER READY") {
                                 notificationSender.sendNotification(notificationSender.ORDER_READY_TITLE,
                                     notificationSender.ORDER_READY_CONTENT)
+                            }
+
+                            if (status == "ORDER CANCELED") {
+                                notificationSender.sendNotification(notificationSender.ORDER_CANCELED_TITLE,
+                                    notificationSender.ORDER_CANCELED_CONTENT)
                             }
                         }
 
