@@ -51,7 +51,7 @@ class CustomerOrderActivity : AppCompatActivity() {
 
                 //TODO: Change ids
                 val order = Order(UUID.randomUUID().toString(), intent.getStringExtra("customerId"), intent.getStringExtra("vendorId"),
-                    intent.getStringExtra("truckId"), currentOrderList, "IN PROGRESS", totalPrice, Calendar.getInstance().time, Calendar.getInstance().time)
+                    intent.getStringExtra("truckId"), currentOrderList, "ORDER RECEIVED", totalPrice, Calendar.getInstance().time, Calendar.getInstance().time)
                 orderDao.createOrder(order)
 
                 Toast.makeText(this, "Order placed successfully", Toast.LENGTH_LONG).show()
