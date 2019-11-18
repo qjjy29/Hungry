@@ -1,7 +1,6 @@
 package com.osueat.hungry.ui.vendor
 
 import android.app.AlertDialog
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
@@ -14,12 +13,10 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.osueat.hungry.CustomerTruckInfoActivity
 import com.osueat.hungry.R
 import com.osueat.hungry.model.Order
 import com.osueat.hungry.model.OrderDao
 import com.osueat.hungry.model.OrderListAdapter
-import kotlinx.android.synthetic.main.layout_update_delete_truck.view.*
 import kotlinx.android.synthetic.main.layout_update_order_status.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -57,7 +54,7 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
             // update name, address, and status of truck
             if (!TextUtils.isEmpty(newStatus)) {
                 val newOrder = Order(order.id, order.customerId, order.vendorId, order.truckId, order.orderedFoodList,
-                    newStatus, order.price, order.createDate, Calendar.getInstance().time)
+                    newStatus, order.price, null, order.createDate, Calendar.getInstance().time)
 
                 orderDao.updateOrderById(order.id, newOrder)
 

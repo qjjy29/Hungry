@@ -10,6 +10,7 @@ data class Order (
     val orderedFoodList: List<OrderedFood>,
     val status: String,
     val price: Double,
+    val paymentId: String?,
     val createDate: Date,
     val lastUpdateDate: Date
 )

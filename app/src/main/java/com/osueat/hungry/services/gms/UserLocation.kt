@@ -24,8 +24,12 @@ object UserLocation {
 
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location : Location? ->
-                currentLocation = LatLng(location?.latitude!!, location?.longitude!!)
-                Log.d(TAG, "user location updated! ${location.latitude} ${location.longitude}")
+                currentLocation = if (location == null) {
+                    LatLng(0.0, 0.0)
+                } else {
+                    LatLng(location?.latitude!!, location?.longitude!!)
+                }
+                Log.d(TAG, "user location updated! ${currentLocation.latitude} ${currentLocation.longitude}")
             }
     }
 }
