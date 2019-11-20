@@ -48,6 +48,37 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
         val alertWindow = alertDialog.create()
         alertWindow.show()
 
+        updateView.inProgressButton.setOnClickListener(View.OnClickListener {
+            val newOrder = Order(order.id, order.customerId, order.vendorId, order.truckId, order.orderedFoodList,
+                "IN PROGRESS", order.price, order.createDate, Calendar.getInstance().time)
+
+            orderDao.updateOrderById(order.id, newOrder)
+
+            Toast.makeText(this, "Order status updated", Toast.LENGTH_LONG).show()
+            alertWindow.dismiss()
+        })
+
+        updateView.readyButton.setOnClickListener(View.OnClickListener {
+            val newOrder = Order(order.id, order.customerId, order.vendorId, order.truckId, order.orderedFoodList,
+                "ORDER READY", order.price, order.createDate, Calendar.getInstance().time)
+
+            orderDao.updateOrderById(order.id, newOrder)
+
+            Toast.makeText(this, "Order status updated", Toast.LENGTH_LONG).show()
+            alertWindow.dismiss()
+        })
+
+        updateView.cancelButton.setOnClickListener(View.OnClickListener {
+            val newOrder = Order(order.id, order.customerId, order.vendorId, order.truckId, order.orderedFoodList,
+                "ORDER CANCELED", order.price, order.createDate, Calendar.getInstance().time)
+
+            orderDao.updateOrderById(order.id, newOrder)
+
+            Toast.makeText(this, "Order status updated", Toast.LENGTH_LONG).show()
+            alertWindow.dismiss()
+        })
+
+        /*
         updateView.updateStatusButton.setOnClickListener(View.OnClickListener {
             val newStatus = updateView.statusEditText.text.toString()
 
@@ -65,6 +96,7 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter a new status", Toast.LENGTH_LONG).show()
             }
         })
+         */
     }
 
     public override fun onStart() {

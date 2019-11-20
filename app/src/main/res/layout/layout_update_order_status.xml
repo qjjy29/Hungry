@@ -5,26 +5,22 @@
     android:orientation="vertical"
     android:padding="@dimen/activity_horizontal_margin">
 
-
-    <EditText
-        android:id="@+id/statusEditText"
+    <Button
+        android:id="@+id/inProgressButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="New Status" />
+        android:text="@string/order_in_progress" />
 
-    <LinearLayout
+    <Button
+        android:id="@+id/readyButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:text="@string/order_ready" />
 
-        <Button
-            android:id="@+id/updateStatusButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/update" />
-
-    </LinearLayout>
-
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/order_canceled" />
 
 </LinearLayout>
