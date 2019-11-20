@@ -1,4 +1,4 @@
-package com.osueat.hungry
+package com.osueat.hungry.ui.customer
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,13 +14,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.osueat.hungry.MapsActivity
+import com.osueat.hungry.R
 import com.osueat.hungry.data.model.CurrentCustomer
 import com.osueat.hungry.model.*
 import kotlinx.android.synthetic.main.activity_customer_truck_info.*
-import kotlinx.android.synthetic.main.activity_customer_truck_info.view.*
 import kotlinx.android.synthetic.main.activity_customer_truck_info.view.addReviewButton
-import kotlinx.android.synthetic.main.activity_customer_truck_info.view.createOrderButton
-import kotlinx.android.synthetic.main.activity_customer_truck_info.view.createOrderButton
 import kotlinx.android.synthetic.main.layout_add_review.view.*
 import java.util.*
 import kotlin.collections.ArrayList

@@ -1,4 +1,4 @@
-package com.osueat.hungry
+package com.osueat.hungry.ui.customer
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +10,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.osueat.hungry.R
 import com.osueat.hungry.model.Truck
 import com.osueat.hungry.model.TruckDao
 import com.osueat.hungry.model.TruckListAdapter

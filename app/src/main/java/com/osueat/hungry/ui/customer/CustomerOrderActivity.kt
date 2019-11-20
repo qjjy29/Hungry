@@ -1,22 +1,18 @@
-package com.osueat.hungry
+package com.osueat.hungry.ui.customer
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.ListView
 import android.widget.Toast
 import com.osueat.hungry.model.*
 import kotlinx.android.synthetic.main.activity_customer_order.*
-import kotlinx.android.synthetic.main.activity_vendor_add_truck.*
 import java.util.*
-import android.widget.CheckBox
 import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.*
+import com.osueat.hungry.R
 import com.osueat.hungry.notification.NotificationSender
 import kotlinx.android.synthetic.main.layout_add_food_to_order.view.*
 
@@ -51,7 +47,8 @@ class CustomerOrderActivity : AppCompatActivity() {
 
                 //TODO: Change ids
                 val order = Order(UUID.randomUUID().toString(), intent.getStringExtra("customerId"), intent.getStringExtra("vendorId"),
-                    intent.getStringExtra("truckId"), currentOrderList, "ORDER RECEIVED", totalPrice, Calendar.getInstance().time, Calendar.getInstance().time)
+                    intent.getStringExtra("truckId"), currentOrderList, "ORDER RECEIVED", totalPrice, null, Calendar.getInstance().time, Calendar.getInstance().time)
+                
                 orderDao.createOrder(order)
 
                 Toast.makeText(this, "Order placed successfully", Toast.LENGTH_LONG).show()

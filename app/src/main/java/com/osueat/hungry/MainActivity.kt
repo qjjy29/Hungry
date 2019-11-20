@@ -1,8 +1,5 @@
 package com.osueat.hungry
 
-import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,30 +7,16 @@ import android.util.Log
 import android.widget.Button
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.solver.widgets.ChainHead
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.osueat.hungry.model.*
-import com.osueat.hungry.notification.NotificationHandler
-import java.util.*
-import kotlin.collections.HashMap
 import android.content.pm.PackageManager
-import android.Manifest.permission
 import android.Manifest.permission.ACCESS_FINE_LOCATION
-import com.osueat.hungry.data.model.CurrentCustomer
-import com.osueat.hungry.data.model.CurrentUser
-import com.osueat.hungry.notification.NotificationSender
 import com.osueat.hungry.services.gms.UserLocation
-import kotlinx.android.synthetic.main.activity_customer_order.*
+import com.osueat.hungry.ui.customer.CustomerNearbyTruckActivity
+import com.osueat.hungry.ui.customer.CustomerOrderHistoryActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 

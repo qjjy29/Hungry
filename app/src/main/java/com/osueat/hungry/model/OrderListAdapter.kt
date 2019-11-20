@@ -16,7 +16,9 @@ import com.google.firebase.database.ValueEventListener
 
 
 
-class OrderListAdapter(private val context: Activity, internal var orderList: List<Order>) :
+
+
+class OrderListAdapter(private val context: Activity, private var orderList: List<Order>) :
     ArrayAdapter<Order>(context, R.layout.layout_order_list, orderList) {
 
     private val ref = FirebaseDatabase.getInstance().reference
@@ -49,5 +51,9 @@ class OrderListAdapter(private val context: Activity, internal var orderList: Li
         statusTextView.text = order.status
 
         return listViewItem
+    }
+
+    override fun getItem(position: Int): Order? {
+        return orderList[position]
     }
 }

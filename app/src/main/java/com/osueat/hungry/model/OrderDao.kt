@@ -20,10 +20,11 @@ class OrderDao(private val databaseRef: DatabaseReference) {
         val orderedFoodList = dataSnapshot.child("orderedFoodList").value as List<OrderedFood>
         val status = dataSnapshot.child("status").value as String
         val price = dataSnapshot.child("price").getValue(Double::class.java)
+        val paymentId = dataSnapshot.child("paymentId").getValue(String::class.java)
         val createDate = dataSnapshot.child("createDate").getValue(Date::class.java)
         val lastUpdateDate = dataSnapshot.child("lastUpdateDate").getValue(Date::class.java)
         return Order(id, customerId, vendorId, truckId, orderedFoodList,
-            status, price!!, createDate!!, lastUpdateDate!!)
+            status, price!!, paymentId, createDate!!, lastUpdateDate!!)
     }
 
     fun createOrder(order: Order) {
