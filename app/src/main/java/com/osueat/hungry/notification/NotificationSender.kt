@@ -14,6 +14,8 @@ class NotificationSender(activity: Activity) {
     val ORDER_IN_PROGRESS_CONTENT = "Delicious food is coming soon!"
     val ORDER_READY_TITLE = "Your order is ready now"
     val ORDER_READY_CONTENT = "Enjoy your meal and have a good day!"
+    val ORDER_CANCELED_TITLE = "Order canceled"
+    val ORDER_CANCELED_CONTENT = "Your order has been canceled."
 
     fun sendNotification(title: String, content: String) {
         val notificationHandler = NotificationHandler(activity)

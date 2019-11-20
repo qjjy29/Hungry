@@ -47,7 +47,8 @@ class CustomerOrderActivity : AppCompatActivity() {
 
                 //TODO: Change ids
                 val order = Order(UUID.randomUUID().toString(), intent.getStringExtra("customerId"), intent.getStringExtra("vendorId"),
-                    intent.getStringExtra("truckId"), currentOrderList, "IN PROGRESS", totalPrice, null, Calendar.getInstance().time, Calendar.getInstance().time)
+                    intent.getStringExtra("truckId"), currentOrderList, "ORDER RECEIVED", totalPrice, null, Calendar.getInstance().time, Calendar.getInstance().time)
+                
                 orderDao.createOrder(order)
 
                 Toast.makeText(this, "Order placed successfully", Toast.LENGTH_LONG).show()
@@ -67,9 +68,19 @@ class CustomerOrderActivity : AppCompatActivity() {
                         override fun onChildChanged(dataSnapshot: DataSnapshot, prevChildKey: String?) {
                             val status = dataSnapshot.value.toString()
                             Log.d(TAG, status)
-                            if (status == "READY") {
+                            if (status == "IN PROGRESS") {
+                                notificationSender.sendNotification(notificationSender.ORDER_IN_PROGRESS_TITLE,
+                                    notificationSender.ORDER_IN_PROGRESS_CONTENT)
+                            }
+
+                            if (status == "ORDER READY") {
                                 notificationSender.sendNotification(notificationSender.ORDER_READY_TITLE,
                                     notificationSender.ORDER_READY_CONTENT)
+                            }
+
+                            if (status == "ORDER CANCELED") {
+                                notificationSender.sendNotification(notificationSender.ORDER_CANCELED_TITLE,
+                                    notificationSender.ORDER_CANCELED_CONTENT)
                             }
                         }
 
