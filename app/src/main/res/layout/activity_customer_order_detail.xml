@@ -13,28 +13,28 @@
         android:id="@+id/orderText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/menu"
+        android:text="@string/order"
         android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
     <Button
-        android:id="@+id/orderButton"
+        android:id="@+id/payButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/orderText"
         android:layout_centerHorizontal="true"
-        android:text="@string/place_order" />
+        android:text="@string/order_pay" />
 
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/orderButton"
+        android:layout_below="@id/payButton"
         android:layout_centerHorizontal="true"
         android:text="@string/cancel" />
 
     <ListView
-        android:id="@+id/menuListView"
+        android:id="@+id/orderListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cancelButton" />

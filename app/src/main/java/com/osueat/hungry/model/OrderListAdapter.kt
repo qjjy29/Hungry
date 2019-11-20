@@ -5,10 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import com.google.firebase.database.FirebaseDatabase
 import com.osueat.hungry.R
 
-class OrderListAdapter(private val context: Activity, internal var orderList: List<Order>) :
+
+
+class OrderListAdapter(private val context: Activity, private var orderList: List<Order>) :
     ArrayAdapter<Order>(context, R.layout.layout_order_list, orderList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -27,5 +28,9 @@ class OrderListAdapter(private val context: Activity, internal var orderList: Li
         statusTextView.text = order.status
 
         return listViewItem
+    }
+
+    override fun getItem(position: Int): Order? {
+        return orderList[position]
     }
 }
