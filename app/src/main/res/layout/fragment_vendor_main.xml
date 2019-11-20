@@ -20,13 +20,14 @@
         android:id="@+id/viewOrdersButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/addTruckActivityButton"
         android:text="View Orders" />
 
     <TextView
         android:id="@+id/truckLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addTruckActivityButton"
+        android:layout_below="@id/viewOrdersButton"
         android:text="@string/trucks"
         android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
