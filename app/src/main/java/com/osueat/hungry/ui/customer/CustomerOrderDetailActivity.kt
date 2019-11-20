@@ -90,6 +90,19 @@ class CustomerOrderDetailActivity : AppCompatActivity() {
                             }
 
                         }
+                        cancelButton?.setOnClickListener {
+                            val customer: Customer? = CurrentCustomer.getCustomer()
+                            if (customer != null) {
+                                // change the status to ORDER CANCELED
+                                val orderDao = OrderDao(ref)
+                                val updatedOrder = Order(order.id, order.customerId, order.vendorId,
+                                    order.truckId, order.orderedFoodList, "ORDER CANCELED", order.price,
+                                    order.paymentId, order.createDate, Date())
+                                orderDao.updateOrderById(order.id, updatedOrder)
+                                Toast.makeText(this@CustomerOrderDetailActivity,
+                                    "You have canceled the payment successfully!", Toast.LENGTH_LONG).show()
+                            }
+                        }
                     }
 
                 }
