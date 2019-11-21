@@ -50,7 +50,7 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
 
         updateView.inProgressButton.setOnClickListener(View.OnClickListener {
             val newOrder = Order(order.id, order.customerId, order.vendorId, order.truckId, order.orderedFoodList,
-                "IN PROGRESS", order.price, order.createDate, Calendar.getInstance().time)
+                "IN PROGRESS", order.price, order.paymentId, order.createDate, Calendar.getInstance().time)
 
             orderDao.updateOrderById(order.id, newOrder)
 
@@ -60,7 +60,7 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
 
         updateView.readyButton.setOnClickListener(View.OnClickListener {
             val newOrder = Order(order.id, order.customerId, order.vendorId, order.truckId, order.orderedFoodList,
-                "ORDER READY", order.price, order.createDate, Calendar.getInstance().time)
+                "ORDER READY", order.price, order.paymentId, order.createDate, Calendar.getInstance().time)
 
             orderDao.updateOrderById(order.id, newOrder)
 
@@ -70,7 +70,7 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
 
         updateView.cancelButton.setOnClickListener(View.OnClickListener {
             val newOrder = Order(order.id, order.customerId, order.vendorId, order.truckId, order.orderedFoodList,
-                "ORDER CANCELED", order.price, order.createDate, Calendar.getInstance().time)
+                "ORDER CANCELED", order.price, order.paymentId, order.createDate, Calendar.getInstance().time)
 
             orderDao.updateOrderById(order.id, newOrder)
 

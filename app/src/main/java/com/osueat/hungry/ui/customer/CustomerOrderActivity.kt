@@ -45,7 +45,7 @@ class CustomerOrderActivity : AppCompatActivity() {
                     totalPrice += foodInOrderList[i].price
                 }
 
-                //TODO: Change ids
+                // create a new order
                 val order = Order(UUID.randomUUID().toString(), intent.getStringExtra("customerId"), intent.getStringExtra("vendorId"),
                     intent.getStringExtra("truckId"), currentOrderList, "ORDER RECEIVED", totalPrice, null, Calendar.getInstance().time, Calendar.getInstance().time)
                 
