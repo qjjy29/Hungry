@@ -3,16 +3,12 @@ package com.osueat.hungry
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.*
 
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
 import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
@@ -33,8 +29,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private var targetName = "target"
     private val serverApiKey = "AIzaSyDhRFzvNS_W44tLXmTTk7-CmRKGZTZiLgw"
 
+    private val TAG = "MapsActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val b: Bundle? = intent.extras
 
         if (b != null) {
@@ -45,9 +44,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
         setContentView(R.layout.activity_maps)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
     }
 
     /**
@@ -85,6 +86,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mMap.uiSettings.isZoomGesturesEnabled = true
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
+    }
+
+    override fun onDestroy() {
+        mMap.clear()
+        super.onDestroy()
     }
 
     override fun onMyLocationClick(location: Location) {
