@@ -17,6 +17,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import com.osueat.hungry.services.gms.UserLocation
 import com.osueat.hungry.ui.customer.CustomerNearbyTruckActivity
 import com.osueat.hungry.ui.customer.CustomerOrderHistoryActivity
+import com.osueat.hungry.ui.customer.CustomerProfileActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -47,28 +48,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
-
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-
 
         var button: Button = findViewById(R.id.button)
         button.setOnClickListener {
-            val intent = Intent(this, MapsActivity::class.java)
-            val b = Bundle()
-            b.putDouble("lat", 40.002) //latitude of the truck
-            b.putDouble("lng", -83.018) //longitude of the truck
-            b.putString("name", "All you can eat truck")
-            intent.putExtras(b) //Put your id to your next Intent
+            val intent = Intent(this, CustomerProfileActivity::class.java)
             startActivity(intent)
         }
 

@@ -27,19 +27,20 @@ class CustomerNearbyTruckActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_customer_nearby_truck)
 
-        findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            val t = truckList[i]
+        findViewById<ListView>(R.id.truckListView).onItemClickListener =
+            AdapterView.OnItemClickListener { adapterView, view, i, l ->
+                val t = truckList[i]
 
-            val intent = Intent(this, CustomerTruckInfoActivity::class.java)
-            intent.putExtra("foodIdList", t.foodIdList)
-            intent.putExtra("truckId", t.id)
-            intent.putExtra("truckName", t.name)
-            intent.putExtra("vendorId", t.vendorId)
-            intent.putExtra("customerId", this.intent.getStringExtra("customerId"))
-            intent.putExtra("truckLatitude", t.latitude)
-            intent.putExtra("truckLongitude", t.longitude)
-            startActivity(intent)
-        })
+                val intent = Intent(this, CustomerTruckInfoActivity::class.java)
+                intent.putExtra("foodIdList", t.foodIdList)
+                intent.putExtra("truckId", t.id)
+                intent.putExtra("truckName", t.name)
+                intent.putExtra("vendorId", t.vendorId)
+                intent.putExtra("customerId", this.intent.getStringExtra("customerId"))
+                intent.putExtra("truckLatitude", t.latitude)
+                intent.putExtra("truckLongitude", t.longitude)
+                startActivity(intent)
+            }
     }
 
     public override fun onStart() {

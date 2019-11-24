@@ -48,5 +48,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
+    <string name="customer">Customer</string>
+    <string name="my_profile">my profile</string>
+    <string name="nearby_trucks">Nearby Trucks</string>
+    <string name="profile">Profile</string>
 </resources>
 

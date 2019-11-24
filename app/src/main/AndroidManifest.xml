@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/cat"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.customer.CustomerOrderDetailActivity"></activity>
+        <activity android:name=".ui.customer.CustomerProfileActivity"></activity>
+        <activity android:name=".ui.customer.CustomerOrderDetailActivity" />
         <activity android:name=".ui.vendor.VendorUpdateOrdersActivity" />
         <activity android:name=".ui.customer.CustomerOrderHistoryActivity" />
         <activity android:name=".ui.customer.CustomerOrderActivity" />
