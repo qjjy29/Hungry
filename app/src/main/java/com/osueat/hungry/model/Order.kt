@@ -1,7 +1,10 @@
 package com.osueat.hungry.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+@Parcelize
 data class Order (
     val id: String,
     val customerId: String,
@@ -13,4 +16,4 @@ data class Order (
     val paymentId: String?,
     val createDate: Date,
     val lastUpdateDate: Date
-)
+) : Parcelable
