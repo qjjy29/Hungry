@@ -90,7 +90,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
         findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val t = truckList.get(i)
             truckIndex = i
-            createUpdateTruckWindow(t.id, t.name, t.address, t.isActive, savedInstanceState)
+            createUpdateTruckWindow(t.id, t.name, t.address, t.isActive, null)
         })
     }
 
@@ -217,6 +217,7 @@ class VendorAddTruckActivity : AppCompatActivity() {
                     previousName = ""
                     previousAddress = ""
                     previousChecked = false
+                    alertWindow.dismiss()
                 }
             }
         })
