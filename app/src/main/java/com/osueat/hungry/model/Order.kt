@@ -1,5 +1,7 @@
 package com.osueat.hungry.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 data class Order (

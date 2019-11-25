@@ -42,7 +42,7 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
         val alertDialog = AlertDialog.Builder(this@VendorUpdateOrdersActivity)
         val updateView = layoutInflater.inflate(R.layout.layout_update_order_status, null)
         alertDialog.setView(updateView)
-        alertDialog.setTitle(order.id)
+        alertDialog.setTitle("Order Status")
 
         // show update/delete window
         val alertWindow = alertDialog.create()

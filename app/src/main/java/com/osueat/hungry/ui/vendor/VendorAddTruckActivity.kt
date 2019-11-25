@@ -28,17 +28,28 @@ import kotlinx.android.synthetic.main.activity_vendor_add_truck.addressEditText
 import kotlinx.android.synthetic.main.activity_vendor_add_truck.nameEditText
 import kotlinx.android.synthetic.main.layout_update_delete_truck.*
 import kotlinx.android.synthetic.main.layout_update_delete_truck.view.*
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.CompoundButton
+
 
 
 class VendorAddTruckActivity : AppCompatActivity() {
 
     private val TAG = "VendorAddTruckActivity"
 
-    val truckList = ArrayList<Truck>()
+    var truckList = ArrayList<Truck>()
     private val ref = FirebaseDatabase.getInstance().reference
 
     private val tempFoodIdList = ArrayList<String>()
     private val truckDao = TruckDao(ref)
+
+    // values stored if screen is rotated
+    private var alertWindowOpen = false
+    private var truckIndex = 0
+    private var previousName = ""
+    private var previousAddress = ""
+    private var previousChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,20 +89,86 @@ class VendorAddTruckActivity : AppCompatActivity() {
         // add on click listener to list view buttons to go to truck page
         findViewById<ListView>(R.id.truckListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val t = truckList.get(i)
-            createUpdateTruckWindow(t.id, t.name, t.address, t.isActive)
+            truckIndex = i
+            createUpdateTruckWindow(t.id, t.name, t.address, t.isActive, savedInstanceState)
         })
-
     }
 
-    private fun createUpdateTruckWindow(truckId: String, truckName: String, truckAddress: String, truckActiveStatus : Boolean) {
+    override fun onSaveInstanceState(bundle: Bundle) {
+        super.onSaveInstanceState(bundle)
+        bundle.putBoolean("alertWindowOpen", alertWindowOpen)
+        bundle.putInt("truckIndex", truckIndex)
+        bundle.putParcelableArrayList("truckList", truckList)
+        bundle.putString("previousName", previousName)
+        bundle.putString("previousAddress", previousAddress)
+        bundle.putBoolean("previousChecked", previousChecked)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.i(TAG, "onRestoreInstanceState")
+
+        if (savedInstanceState!!.getBoolean("alertWindowOpen") == true) {
+            truckList = savedInstanceState!!.getParcelableArrayList<Truck>("truckList")!!
+            val t = truckList.get(savedInstanceState!!.getInt("truckIndex"))
+            createUpdateTruckWindow(t.id, t.name, t.address, t.isActive, savedInstanceState)
+        }
+    }
+
+    private fun createUpdateTruckWindow(truckId: String, truckName: String, truckAddress: String, truckActiveStatus : Boolean, restoredValues : Bundle?) {
+        alertWindowOpen = true
         val alertDialog = AlertDialog.Builder(this@VendorAddTruckActivity)
         val updateView = layoutInflater.inflate(R.layout.layout_update_delete_truck, null)
         alertDialog.setView(updateView)
         alertDialog.setTitle(truckName)
 
+        alertDialog.setOnCancelListener {
+            alertWindowOpen = false
+            previousName = ""
+            previousAddress = ""
+            previousChecked = false
+        }
+
         // show update/delete window
         val alertWindow = alertDialog.create()
         alertWindow.show()
+
+        if (restoredValues != null) {
+            previousName = restoredValues!!.getString("previousName").toString()
+            previousAddress = restoredValues!!.getString("previousAddress").toString()
+            previousChecked = restoredValues!!.getBoolean("previousChecked")
+
+            updateView.nameEditText.setText(restoredValues!!.getString("previousName"))
+            updateView.addressEditText.setText(restoredValues!!.getString("previousAddress"))
+            updateView.activeCheckbox.isChecked = restoredValues!!.getBoolean("previousChecked")
+        }
+
+        updateView.nameEditText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                previousName = updateView.nameEditText.text.toString()
+            }
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+        })
+
+        updateView.addressEditText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                previousAddress = updateView.addressEditText.text.toString()
+            }
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+        })
+
+        updateView.activeCheckbox.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+            previousChecked = updateView.activeCheckbox.isChecked
+        })
+
 
         updateView.updateTruckButton.setOnClickListener(View.OnClickListener {
             val newName = updateView.nameEditText.text.toString()
@@ -102,7 +179,11 @@ class VendorAddTruckActivity : AppCompatActivity() {
             if (!TextUtils.isEmpty(newName) && !TextUtils.isEmpty(newAddress) && isActive == !truckActiveStatus) {
                 updateTruck(truckId, newName, newAddress, isActive)
                 alertWindow.dismiss()
+                alertWindowOpen = false
                 Toast.makeText(this, "Truck name, address, and status updated", Toast.LENGTH_LONG).show()
+                previousName = ""
+                previousAddress = ""
+                previousChecked = false
             }
 
             else if (TextUtils.isEmpty((newName)) || TextUtils.isEmpty((newAddress)) || isActive == !truckActiveStatus) {
@@ -111,6 +192,10 @@ class VendorAddTruckActivity : AppCompatActivity() {
                     updateTruck(truckId, truckName, newAddress, isActive)
                     Toast.makeText(this, "Truck address updated", Toast.LENGTH_LONG).show()
                     alertWindow.dismiss()
+                    alertWindowOpen = false
+                    previousName = ""
+                    previousAddress = ""
+                    previousChecked = false
                 }
 
                 // update only name; address remains unchanged
@@ -118,12 +203,20 @@ class VendorAddTruckActivity : AppCompatActivity() {
                     updateTruck(truckId, newName, truckAddress, isActive)
                     Toast.makeText(this, "Truck name updated", Toast.LENGTH_LONG).show()
                     alertWindow.dismiss()
+                    alertWindowOpen = false
+                    previousName = ""
+                    previousAddress = ""
+                    previousChecked = false
                 }
 
                 // update only active status of truck
                 else {
                     updateTruck(truckId, truckName, truckAddress, isActive)
+                    alertWindowOpen = false
                     Toast.makeText(this, "Truck status updated", Toast.LENGTH_LONG).show()
+                    previousName = ""
+                    previousAddress = ""
+                    previousChecked = false
                 }
             }
         })
@@ -132,6 +225,10 @@ class VendorAddTruckActivity : AppCompatActivity() {
             truckDao.deleteTruckById(truckId)
             Toast.makeText(this, "Truck deleted from database", Toast.LENGTH_LONG).show()
             alertWindow.dismiss()
+            alertWindowOpen = false
+            previousName = ""
+            previousAddress = ""
+            previousChecked = false
         })
     }
 
