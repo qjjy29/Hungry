@@ -16,13 +16,7 @@ class CustomerProfileActivity : AppCompatActivity() {
 
     private val ref = FirebaseDatabase.getInstance().reference
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_customer_profile)
-    }
-
-    override fun onStart() {
-        super.onStart()
+    private fun getCustomerInfo() {
         val currentCustomer = CurrentCustomer.getCustomer()
         if (currentCustomer != null) {
             ref.child("customers").child(currentCustomer.id)
@@ -43,5 +37,15 @@ class CustomerProfileActivity : AppCompatActivity() {
                     }
                 })
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_customer_profile)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        getCustomerInfo()
     }
 }

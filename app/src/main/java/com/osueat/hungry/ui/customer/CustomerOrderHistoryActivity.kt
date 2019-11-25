@@ -14,8 +14,7 @@ import android.content.Intent
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
-
-
+import android.widget.Toast
 
 
 class CustomerOrderHistoryActivity : AppCompatActivity() {
@@ -52,9 +51,25 @@ class CustomerOrderHistoryActivity : AppCompatActivity() {
         })
     }
 
-    public override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart() called")
+    private fun checkConnection() {
+        ref.child(".info/connected").addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val connected = dataSnapshot.getValue(Boolean::class.java)
+                if (connected == null || !connected) {
+                    Toast.makeText(this@CustomerOrderHistoryActivity,
+                        "Connection lost", Toast.LENGTH_LONG).show()
+                } else {
+                    getOrderList()
+                }
+            }
+        })
+    }
+
+    private fun getOrderList() {
 
         ref.child("orders").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -77,5 +92,17 @@ class CustomerOrderHistoryActivity : AppCompatActivity() {
                 TODO("not implemented")
             }
         })
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart() called")
+
+        checkConnection()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume() called")
     }
 }
