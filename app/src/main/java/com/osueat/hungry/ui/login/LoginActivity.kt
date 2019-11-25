@@ -144,18 +144,9 @@ class LoginActivity : AppCompatActivity() {
 
             // go to the main activity
 
-            // if vendor, go to vendor home page
-            var vendorCheckBox: CheckBox = findViewById(R.id.vendorCheckBox)
-            if (vendorCheckBox.isChecked) {
-                val intent = Intent(this, VendorMainActivity::class.java)
-                startActivity(intent)
-            }
-
-            else {
-                // else go to customer main activity
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            }
+            // else go to customer main activity
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
 
             //Complete and destroy login activity once successful
             finish()

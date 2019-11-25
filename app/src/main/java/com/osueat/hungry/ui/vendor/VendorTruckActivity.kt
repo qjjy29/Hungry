@@ -2,9 +2,12 @@ package com.osueat.hungry.ui.vendor
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -31,15 +34,25 @@ class VendorTruckActivity : AppCompatActivity() {
 
     private val TAG = "VendorTruckActivity"
 
-    private val foodList = ArrayList<Food>()
+    private var foodList = ArrayList<Food>()
     private val ref = FirebaseDatabase.getInstance().reference
 
     private val foodDao = FoodDao(ref)
     private val truckDao = TruckDao(ref)
     private val foodIdList = ArrayList<String>()
 
-    // todo: change this probably
     private val currentTruck = ArrayList<Truck>()
+
+    // variables for screen rotation
+    private var editTruckWindowOpen = false
+    private var addFoodWindowOpen = false
+    private var previousName = ""
+    private var previousAddress = ""
+    private var previousChecked = false
+    private var previousFoodName = ""
+    private var previousFoodPrice = ""
+    private var previousFoodDescription = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,23 +63,97 @@ class VendorTruckActivity : AppCompatActivity() {
         //Toast.makeText(this, this.intent.getStringExtra("truckId"), Toast.LENGTH_LONG).show()
 
         editTruckButton.setOnClickListener(View.OnClickListener {
-            createUpdateTruckWindow(currentTruck[0].id, currentTruck[0].name, currentTruck[0].address, currentTruck[0].isActive)
+            createUpdateTruckWindow(currentTruck[0].id, currentTruck[0].name, currentTruck[0].address, currentTruck[0].isActive, null)
         })
 
         addFoodButton.setOnClickListener(View.OnClickListener {
-            createAddFoodWindow()
+            createAddFoodWindow(null)
         })
     }
 
-    private fun createUpdateTruckWindow(truckId: String, truckName: String, truckAddress: String, truckActiveStatus : Boolean) {
+    override fun onSaveInstanceState(bundle: Bundle) {
+        super.onSaveInstanceState(bundle)
+        bundle.putBoolean("editTruckWindowOpen", editTruckWindowOpen)
+        bundle.putBoolean("addFoodWindowOpen", addFoodWindowOpen)
+        bundle.putParcelableArrayList("currentTruck", currentTruck)
+        bundle.putString("previousName", previousName)
+        bundle.putString("previousAddress", previousAddress)
+        bundle.putBoolean("previousChecked", previousChecked)
+        bundle.putParcelableArrayList("foodList", foodList)
+        bundle.putString("previousFoodName", previousFoodName)
+        bundle.putString("previousFoodPrice", previousFoodPrice)
+        bundle.putString("previousFoodDescription", previousFoodDescription)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.i(TAG, "onRestoreInstanceState")
+
+        foodList = savedInstanceState!!.getParcelableArrayList<Food>("foodList")!!
+
+        if (savedInstanceState!!.getBoolean("editTruckWindowOpen")) {
+            val truck = savedInstanceState!!.getParcelableArrayList<Truck>("currentTruck")
+            createUpdateTruckWindow(truck!![0].id, truck!![0].name, truck!![0].address, truck!![0].isActive, savedInstanceState)
+        }
+
+        else if (savedInstanceState!!.getBoolean("addFoodWindowOpen")) {
+            createAddFoodWindow(savedInstanceState)
+        }
+    }
+
+    private fun createUpdateTruckWindow(truckId: String, truckName: String, truckAddress: String, truckActiveStatus : Boolean, restoredValues : Bundle?) {
+        editTruckWindowOpen = true
         val alertDialog = android.app.AlertDialog.Builder(this@VendorTruckActivity)
         val updateView = layoutInflater.inflate(R.layout.layout_update_delete_truck, null)
         alertDialog.setView(updateView)
         alertDialog.setTitle(truckName)
 
+        alertDialog.setOnCancelListener {
+            editTruckWindowOpen = false
+            previousName = ""
+            previousAddress = ""
+            previousChecked = false
+        }
+
         // show update/delete window
         val alertWindow = alertDialog.create()
         alertWindow.show()
+
+        if (restoredValues != null) {
+            previousName = restoredValues!!.getString("previousName").toString()
+            previousAddress = restoredValues!!.getString("previousAddress").toString()
+            previousChecked = restoredValues!!.getBoolean("previousChecked")
+
+            updateView.nameEditText.setText(restoredValues!!.getString("previousName"))
+            updateView.addressEditText.setText(restoredValues!!.getString("previousAddress"))
+            updateView.activeCheckbox.isChecked = restoredValues!!.getBoolean("previousChecked")
+        }
+
+        updateView.nameEditText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                previousName = updateView.nameEditText.text.toString()
+            }
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+        })
+
+        updateView.addressEditText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                previousAddress = updateView.addressEditText.text.toString()
+            }
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+        })
+
+        updateView.activeCheckbox.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+            previousChecked = updateView.activeCheckbox.isChecked
+        })
 
         updateView.updateTruckButton.setOnClickListener(View.OnClickListener {
             val newName = updateView.nameEditText.text.toString()
@@ -76,6 +163,10 @@ class VendorTruckActivity : AppCompatActivity() {
             // update name, address, and status of truck
             if (!TextUtils.isEmpty(newName) && !TextUtils.isEmpty(newAddress) && isActive == !truckActiveStatus) {
                 updateTruck(truckId, newName, newAddress, isActive)
+                editTruckWindowOpen = false
+                previousName = ""
+                previousAddress = ""
+                previousChecked = false
                 alertWindow.dismiss()
                 Toast.makeText(this, "Truck name, address, and status updated", Toast.LENGTH_LONG).show()
             }
@@ -85,6 +176,10 @@ class VendorTruckActivity : AppCompatActivity() {
                 if (TextUtils.isEmpty((newName)) && !TextUtils.isEmpty((newAddress))) {
                     updateTruck(truckId, truckName, newAddress, isActive)
                     Toast.makeText(this, "Truck address updated", Toast.LENGTH_LONG).show()
+                    editTruckWindowOpen = false
+                    previousName = ""
+                    previousAddress = ""
+                    previousChecked = false
                     alertWindow.dismiss()
                 }
 
@@ -92,6 +187,20 @@ class VendorTruckActivity : AppCompatActivity() {
                 else if (!TextUtils.isEmpty((newName)) && TextUtils.isEmpty((newAddress))) {
                     updateTruck(truckId, newName, truckAddress, isActive)
                     Toast.makeText(this, "Truck name updated", Toast.LENGTH_LONG).show()
+                    editTruckWindowOpen = false
+                    previousName = ""
+                    previousAddress = ""
+                    previousChecked = false
+                    alertWindow.dismiss()
+                }
+
+                else if (!TextUtils.isEmpty((newName)) && !TextUtils.isEmpty((newAddress))) {
+                    updateTruck(truckId, newName, truckAddress, isActive)
+                    Toast.makeText(this, "Truck name, address, and status updated", Toast.LENGTH_LONG).show()
+                    editTruckWindowOpen = false
+                    previousName = ""
+                    previousAddress = ""
+                    previousChecked = false
                     alertWindow.dismiss()
                 }
 
@@ -99,6 +208,11 @@ class VendorTruckActivity : AppCompatActivity() {
                 else {
                     updateTruck(truckId, truckName, truckAddress, isActive)
                     Toast.makeText(this, "Truck status updated", Toast.LENGTH_LONG).show()
+                    editTruckWindowOpen = false
+                    previousName = ""
+                    previousAddress = ""
+                    previousChecked = false
+                    alertWindow.dismiss()
                 }
             }
         })
@@ -107,17 +221,72 @@ class VendorTruckActivity : AppCompatActivity() {
             truckDao.deleteTruckById(truckId)
             Toast.makeText(this, "Truck deleted from database", Toast.LENGTH_LONG).show()
             finish()
+            editTruckWindowOpen = false
+            previousName = ""
+            previousAddress = ""
+            previousChecked = false
             alertWindow.dismiss()
         })
     }
 
-    private fun createAddFoodWindow() {
+    private fun createAddFoodWindow(restoredValues: Bundle?) {
+        addFoodWindowOpen = true
         val alertDialog = AlertDialog.Builder(this@VendorTruckActivity)
         val addFoodView = layoutInflater.inflate(R.layout.layout_add_food_to_truck, null)
         alertDialog.setView(addFoodView)
         alertDialog.setTitle("New Food")
         val alertWindow = alertDialog.create()
         alertWindow.show()
+
+        alertDialog.setOnCancelListener {
+            addFoodWindowOpen = false
+            previousFoodName = ""
+            previousFoodPrice = ""
+            previousFoodDescription = ""
+        }
+
+        if (restoredValues != null) {
+            previousFoodName = restoredValues!!.getString("previousFoodName").toString()
+            previousFoodPrice = restoredValues!!.getString("previousFoodPrice").toString()
+            previousFoodDescription = restoredValues!!.getString("previousFoodDescription").toString()
+
+            addFoodView.nameEditText.setText(restoredValues!!.getString("previousFoodName"))
+            addFoodView.priceEditText.setText(restoredValues!!.getString("previousFoodPrice"))
+            addFoodView.descriptionEditText.setText(restoredValues!!.getString("previousFoodDescription"))
+        }
+
+        addFoodView.nameEditText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                previousFoodName = addFoodView.nameEditText.text.toString()
+            }
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+        })
+
+        addFoodView.priceEditText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                previousFoodPrice = addFoodView.priceEditText.text.toString()
+            }
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+        })
+
+        addFoodView.descriptionEditText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                previousFoodDescription = addFoodView.descriptionEditText.text.toString()
+            }
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+        })
 
         addFoodView.addNewFoodButton.setOnClickListener (View.OnClickListener {
 
@@ -153,12 +322,20 @@ class VendorTruckActivity : AppCompatActivity() {
                 foodDao.createFood(food)
                 foodList.add(food)
                 alertWindow.dismiss()
+                previousFoodName = ""
+                previousFoodPrice = ""
+                previousFoodDescription = ""
+                addFoodWindowOpen = false
             }
         })
 
 
         addFoodView.cancelButton.setOnClickListener (View.OnClickListener {
             alertWindow.dismiss()
+            previousFoodName = ""
+            previousFoodPrice = ""
+            previousFoodDescription = ""
+            addFoodWindowOpen = false
         })
     }
 

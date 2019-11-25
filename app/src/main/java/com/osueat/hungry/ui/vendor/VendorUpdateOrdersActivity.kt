@@ -17,6 +17,7 @@ import com.osueat.hungry.R
 import com.osueat.hungry.model.Order
 import com.osueat.hungry.model.OrderDao
 import com.osueat.hungry.model.OrderListAdapter
+import com.osueat.hungry.model.Truck
 import kotlinx.android.synthetic.main.layout_update_order_status.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -25,8 +26,12 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
 
     private val ref = FirebaseDatabase.getInstance().reference
     private val TAG = "UpdateOrdersActivity"
-    private val orderList = ArrayList<Order>()
+    private var orderList = ArrayList<Order>()
     private val orderDao = OrderDao(ref)
+
+    // variables that will be saved on screen rotation
+    private var alertWindowOpen = false
+    private var orderIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,15 +39,39 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
 
         findViewById<ListView>(R.id.orderListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val o = orderList[i]
-            createUpdateOrderStatusWindow(o)
+            orderIndex = i
+            createUpdateOrderStatusWindow(o, savedInstanceState)
         })
     }
 
-    private fun createUpdateOrderStatusWindow(order: Order) {
+    override fun onSaveInstanceState(bundle: Bundle) {
+        super.onSaveInstanceState(bundle)
+        bundle.putBoolean("alertWindowOpen", alertWindowOpen)
+        bundle.putParcelableArrayList("orderList", orderList)
+        bundle.putInt("orderIndex", orderIndex)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.i(TAG, "onRestoreInstanceState")
+
+        if (savedInstanceState!!.getBoolean("alertWindowOpen")) {
+            orderList = savedInstanceState!!.getParcelableArrayList<Order>("orderList")!!
+            val o = orderList.get(savedInstanceState!!.getInt("orderIndex"))
+            createUpdateOrderStatusWindow(o, savedInstanceState)
+        }
+    }
+
+    private fun createUpdateOrderStatusWindow(order: Order, restoredValues : Bundle?) {
+        alertWindowOpen = true
         val alertDialog = AlertDialog.Builder(this@VendorUpdateOrdersActivity)
         val updateView = layoutInflater.inflate(R.layout.layout_update_order_status, null)
         alertDialog.setView(updateView)
-        alertDialog.setTitle(order.id)
+        alertDialog.setTitle("Order Status")
+
+        alertDialog.setOnCancelListener {
+            alertWindowOpen = false
+        }
 
         // show update/delete window
         val alertWindow = alertDialog.create()
@@ -56,6 +85,7 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Order status updated", Toast.LENGTH_LONG).show()
             alertWindow.dismiss()
+            alertWindowOpen = false
         })
 
         updateView.readyButton.setOnClickListener(View.OnClickListener {
@@ -66,6 +96,7 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Order status updated", Toast.LENGTH_LONG).show()
             alertWindow.dismiss()
+            alertWindowOpen = false
         })
 
         updateView.cancelButton.setOnClickListener(View.OnClickListener {
@@ -76,6 +107,7 @@ class VendorUpdateOrdersActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Order status updated", Toast.LENGTH_LONG).show()
             alertWindow.dismiss()
+            alertWindowOpen = false
         })
 
         /*

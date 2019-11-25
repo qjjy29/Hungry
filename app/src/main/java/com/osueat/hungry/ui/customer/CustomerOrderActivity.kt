@@ -22,11 +22,15 @@ class CustomerOrderActivity : AppCompatActivity() {
     private val TAG = "CustomerOrderActivity"
     private val ref = FirebaseDatabase.getInstance().reference
     private val orderDao = OrderDao(ref)
-    private val foodList = ArrayList<Food>()
+    private var foodList = ArrayList<Food>()
     private val foodDao = FoodDao(ref)
 
-    private val currentOrderList = ArrayList<OrderedFood>()
-    private val foodInOrderList = ArrayList<Food>()
+    private var currentOrderList = ArrayList<OrderedFood>()
+    private var foodInOrderList = ArrayList<Food>()
+
+    // variables for screen rotation
+    private var addToOrderWindowOpen = false
+    private var foodIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,8 +111,31 @@ class CustomerOrderActivity : AppCompatActivity() {
 
         findViewById<ListView>(R.id.menuListView).setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val f = foodList[i]
-            createAddToOrderWindow(f)
+            foodIndex = i
+            createAddToOrderWindow(f, null)
         })
+    }
+
+    override fun onSaveInstanceState(bundle: Bundle) {
+        super.onSaveInstanceState(bundle)
+        bundle.putBoolean("addToOrderWindowOpen", addToOrderWindowOpen)
+        bundle.putParcelableArrayList("currentOrderList", currentOrderList)
+        bundle.putParcelableArrayList("foodInOrderList", foodInOrderList)
+        bundle.putParcelableArrayList("foodList", foodList)
+        bundle.putInt("foodIndex", foodIndex)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.i(TAG, "onRestoreInstanceState")
+
+        currentOrderList = savedInstanceState!!.getParcelableArrayList<OrderedFood>("currentOrderList")!!
+        foodInOrderList = savedInstanceState!!.getParcelableArrayList<Food>("foodInOrderList")!!
+        foodList = savedInstanceState!!.getParcelableArrayList<Food>("foodList")!!
+
+        if (savedInstanceState!!.getBoolean("addToOrderWindowOpen")) {
+            createAddToOrderWindow(foodList[savedInstanceState!!.getInt("foodIndex")], savedInstanceState)
+        }
     }
 
     public override fun onStart() {
@@ -138,7 +165,8 @@ class CustomerOrderActivity : AppCompatActivity() {
         })
     }
 
-    private fun createAddToOrderWindow(food: Food) {
+    private fun createAddToOrderWindow(food: Food, restoredValues : Bundle?) {
+        addToOrderWindowOpen = true
         val alertDialog = AlertDialog.Builder(this@CustomerOrderActivity)
         val updateView = layoutInflater.inflate(R.layout.layout_add_food_to_order, null)
         alertDialog.setView(updateView)
@@ -155,10 +183,12 @@ class CustomerOrderActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Food added to order", Toast.LENGTH_SHORT).show()
             alertWindow.dismiss()
+            addToOrderWindowOpen = false
         })
 
         updateView.cancelButton.setOnClickListener(View.OnClickListener {
             alertWindow.dismiss()
+            addToOrderWindowOpen = falseAQ
         })
     }
 }
